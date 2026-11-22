@@ -1,0 +1,2931 @@
+<!DOCTYPE html>
+<html lang="ja" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>それじゃあ勝てんよ？総合</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            retro: ['"DotGothic16"', 'monospace'],
+            sans: ['"M PLUS Rounded 1c"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-base: #090913;
+      --bg-card: rgba(20, 22, 42, 0.88);
+      --bg-card-solid: #14162a;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-1: #00f5d4;
+      --accent-2: #ff007f;
+      --accent-3: #fee440;
+      --border-color: rgba(0, 245, 212, 0.35);
+      --glow-color: rgba(0, 245, 212, 0.45);
+    }
+
+    html:not(.dark) {
+      --bg-base: #f0f4f8;
+      --bg-card: rgba(255, 255, 255, 0.92);
+      --bg-card-solid: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: rgba(15, 23, 42, 0.18);
+    }
+
+    /* テーマ別カラー変数 */
+    body[data-theme="neon"] {
+      --accent-1: #00f5d4;
+      --accent-2: #ff007f;
+      --accent-3: #fee440;
+      --glow-color: rgba(0, 245, 212, 0.45);
+    }
+    body[data-theme="famicom"] {
+      --accent-1: #e60012;
+      --accent-2: #d4af37;
+      --accent-3: #22c55e;
+      --glow-color: rgba(230, 0, 18, 0.4);
+    }
+    body[data-theme="cyber"] {
+      --accent-1: #00ff41;
+      --accent-2: #00b8ff;
+      --accent-3: #d946ef;
+      --glow-color: rgba(0, 255, 65, 0.4);
+    }
+    body[data-theme="pastel"] {
+      --accent-1: #ff758f;
+      --accent-2: #70d6ff;
+      --accent-3: #ffd670;
+      --glow-color: rgba(255, 117, 143, 0.4);
+    }
+    body[data-theme="suruga"] {
+      --accent-1: #3b82f6;
+      --accent-2: #f97316;
+      --accent-3: #10b981;
+      --glow-color: rgba(59, 130, 246, 0.4);
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* 派手なメインロゴ */
+    .mega-title {
+      font-family: 'DotGothic16', sans-serif;
+      background: linear-gradient(135deg, var(--accent-3) 0%, var(--accent-1) 45%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 0 rgba(0,0,0,0.65)) drop-shadow(0 0 18px var(--glow-color));
+      letter-spacing: 0.04em;
+      animation: titlePulse 3s ease-in-out infinite alternate;
+    }
+    html:not(.dark) .mega-title {
+      filter: drop-shadow(0 3px 0 rgba(15,23,42,0.22)) drop-shadow(0 0 12px var(--glow-color));
+    }
+
+    @keyframes titlePulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.02); }
+    }
+
+    /* カード・RPGウィンドウ風スタイル */
+    .rpg-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      box-shadow: 0 10px 30px -5px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .retro-btn {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, filter 0.15s ease;
+      user-select: none;
+    }
+    .retro-btn:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.015);
+      filter: brightness(1.08);
+    }
+    .retro-btn:active:not(:disabled) {
+      transform: translateY(2px) scale(0.97);
+    }
+
+    /* アニメーション群 */
+    @keyframes floatIdle {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-idle {
+      animation: floatIdle 2.2s ease-in-out infinite;
+    }
+
+    @keyframes shakeHard {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      15% { transform: translate(-10px, 4px) rotate(-2deg); }
+      30% { transform: translate(10px, -4px) rotate(2deg); }
+      45% { transform: translate(-8px, -3px) rotate(-1.5deg); }
+      60% { transform: translate(8px, 3px) rotate(1.5deg); }
+      75% { transform: translate(-4px, 2px) rotate(-0.5deg); }
+    }
+    .animate-shake {
+      animation: shakeHard 0.45s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes attackLungeRight {
+      0% { transform: translateX(0) scale(1); }
+      40% { transform: translateX(48px) scale(1.18) rotate(8deg); }
+      100% { transform: translateX(0) scale(1); }
+    }
+    .animate-attack-hero {
+      animation: attackLungeRight 0.45s ease-out;
+    }
+
+    @keyframes attackLungeLeft {
+      0% { transform: translateX(0) scale(1); }
+      40% { transform: translateX(-48px) scale(1.18) rotate(-8deg); }
+      100% { transform: translateX(0) scale(1); }
+    }
+    .animate-attack-enemy {
+      animation: attackLungeLeft 0.45s ease-out;
+    }
+
+    @keyframes damageFlash {
+      0%, 100% { filter: brightness(1); opacity: 1; }
+      25%, 75% { filter: brightness(3) saturate(2) hue-rotate(-40deg); opacity: 0.4; }
+      50% { filter: brightness(1); opacity: 1; }
+    }
+    .animate-hit {
+      animation: damageFlash 0.45s ease-in-out;
+    }
+
+    @keyframes popDamage {
+      0% { opacity: 0; transform: translateY(10px) scale(0.5); }
+      25% { opacity: 1; transform: translateY(-18px) scale(1.25); }
+      80% { opacity: 1; transform: translateY(-34px) scale(1); }
+      100% { opacity: 0; transform: translateY(-48px) scale(0.9); }
+    }
+    .damage-popup {
+      position: absolute;
+      font-family: 'DotGothic16', monospace;
+      font-weight: 900;
+      pointer-events: none;
+      animation: popDamage 0.95s ease-out forwards;
+      text-shadow: 0 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+      z-index: 40;
+    }
+
+    @keyframes screenFlashAnim {
+      0% { opacity: 0.65; }
+      100% { opacity: 0; }
+    }
+    .screen-flash {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      animation: screenFlashAnim 0.4s ease-out forwards;
+    }
+
+    @keyframes comboSlide {
+      0% { transform: scale(0.4) rotate(-8deg); opacity: 0; }
+      50% { transform: scale(1.15) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .combo-badge {
+      animation: comboSlide 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* 背景キャンバス */
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* カスタムスクロールバー */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.15); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 9999px; }
+  </style>
+</head>
+<body data-theme="neon" class="min-h-screen flex flex-col selection:bg-pink-500 selection:text-white">
+
+  <!-- 背景エフェクトキャンバス -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- 画面フラッシュ用コンテナ -->
+  <div id="flashLayer"></div>
+
+  <!-- トースト通知 / メッセージボックス (alert代替) -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+  <!-- モーダルダイアログ (confirm代替・ガチャ結果・レベルアップ等) -->
+  <div id="customModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+    <div id="customModalBox" class="rpg-card w-full max-w-md p-6 text-center relative border-2" style="border-color: var(--accent-1);">
+      <div id="customModalIcon" class="text-5xl mb-3"></div>
+      <h3 id="customModalTitle" class="font-retro text-2xl font-bold mb-2" style="color: var(--accent-3);"></h3>
+      <div id="customModalBody" class="text-sm sm:text-base mb-6 leading-relaxed"></div>
+      <div id="customModalActions" class="flex justify-center gap-3 flex-wrap"></div>
+    </div>
+  </div>
+
+  <!-- ヘッダー -->
+  <header class="sticky top-0 z-40 border-b backdrop-blur-md bg-opacity-85 transition-colors" style="background-color: var(--bg-card); border-color: var(--border-color);">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <!-- タイトル（サブタイトル一切なし） -->
+      <button onclick="switchTab('home')" class="text-left focus:outline-none group">
+        <h1 class="mega-title text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-none py-1">
+          それじゃあ勝てんよ？総合
+        </h1>
+      </button>
+
+      <!-- ステータス＆コントロールバー -->
+      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
+        <!-- プレイヤーミニHUD -->
+        <div class="flex items-center gap-2 px-2.5 py-1 rounded-xl border text-xs sm:text-sm font-retro" style="border-color: var(--border-color); background: rgba(0,0,0,0.2);">
+          <span class="font-bold" style="color: var(--accent-1);">Lv.<span id="hdrLevel">1</span></span>
+          <span class="text-yellow-400 font-bold">🪙<span id="hdrCoins">0</span></span>
+          <span class="hidden md:inline text-xs px-1.5 py-0.5 rounded bg-white/10" id="hdrTitleBadge">見習い衣生活士</span>
+        </div>
+
+        <!-- 壁紙・カラーテーマ選択 -->
+        <select id="themeSelect" onchange="changeWallpaperTheme(this.value)" aria-label="テーマ変更"
+          class="text-xs sm:text-sm font-bold px-2.5 py-1.5 rounded-xl border cursor-pointer focus:outline-none"
+          style="background-color: var(--bg-card-solid); color: var(--text-main); border-color: var(--border-color);">
+          <option value="neon">🎨 ネオン・アーケード</option>
+          <option value="famicom">🎮 レトロ・ファミコンRPG</option>
+          <option value="cyber">💻 サイバー・マトリックス</option>
+          <option value="pastel">🍬 パステル・ポップ</option>
+          <option value="suruga">🌊 和風・駿河和染レトロ</option>
+        </select>
+
+        <!-- ダーク/ライト切替 -->
+        <button id="darkModeBtn" onclick="toggleDarkMode()" title="ダーク/ライトモード切替"
+          class="retro-btn p-2 rounded-xl border text-sm sm:text-base"
+          style="background-color: var(--bg-card-solid); border-color: var(--border-color);">
+          🌙
+        </button>
+
+        <!-- 8bit効果音ミュート切替 -->
+        <button id="soundBtn" onclick="toggleSound()" title="8bitサウンドON/OFF"
+          class="retro-btn p-2 rounded-xl border text-sm sm:text-base"
+          style="background-color: var(--bg-card-solid); border-color: var(--border-color);">
+          🔊
+        </button>
+      </div>
+    </div>
+
+    <!-- ナビゲーションタブ -->
+    <nav class="max-w-7xl mx-auto px-3 sm:px-6 pb-2 flex gap-1.5 overflow-x-auto no-scrollbar">
+      <button onclick="switchTab('home')" data-tab="home" class="nav-tab retro-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap border">
+        ⚔️ クエスト出撃
+      </button>
+      <button onclick="switchTab('gacha')" data-tab="gacha" class="nav-tab retro-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap border">
+        ⛩️ おまもりガチャ＆道具屋
+      </button>
+      <button onclick="switchTab('flashcards')" data-tab="flashcards" class="nav-tab retro-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap border">
+        🃏 暗記カード
+      </button>
+      <button onclick="switchTab('notes')" data-tab="notes" class="nav-tab retro-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap border">
+        📜 重要まとめノート
+      </button>
+      <button onclick="switchTab('dictionary')" data-tab="dictionary" class="nav-tab retro-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap border">
+        📖 用語辞典
+      </button>
+      <button onclick="switchTab('stats')" data-tab="stats" class="nav-tab retro-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap border">
+        📊 戦績・弱点分析
+      </button>
+    </nav>
+  </header>
+
+  <!-- メインコンテンツ領域 -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5">
+
+    <!-- ==================== 1. ホーム（クエスト選択画面） ==================== -->
+    <section id="tab-home" class="tab-section space-y-6">
+      <!-- ステータス概要バナー -->
+      <div class="rpg-card p-4 sm:p-6 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4 w-full lg:w-auto">
+          <div id="homeHeroAvatar" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center border-2 shrink-0 animate-idle" style="border-color: var(--accent-1); background: rgba(0,0,0,0.25);">
+            <!-- 主人公SVG -->
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-retro text-lg sm:text-xl font-bold" style="color: var(--accent-1);">Lv.<span id="homeLevel">1</span></span>
+              <span id="homeEquippedCharm" class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40">おまもり: なし</span>
+            </div>
+            <div class="mt-2 w-full sm:w-64">
+              <div class="flex justify-between text-xs font-retro mb-1">
+                <span>EXP</span>
+                <span><span id="homeExp">0</span> / <span id="homeNextExp">100</span></span>
+              </div>
+              <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden border border-white/10">
+                <div id="homeExpBar" class="h-full transition-all duration-500" style="width: 0%; background: linear-gradient(90deg, var(--accent-1), var(--accent-2));"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- クイック出撃ボタン -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full lg:w-auto">
+          <button onclick="startBattle('all')" class="retro-btn px-4 py-3 rounded-xl font-extrabold text-sm text-slate-950 shadow-lg flex flex-col items-center justify-center" style="background: linear-gradient(135deg, var(--accent-3), var(--accent-1));">
+            <span class="text-lg">🔥</span>
+            <span>全75問制覇</span>
+          </button>
+          <button onclick="startBattle('quick10')" class="retro-btn px-4 py-3 rounded-xl font-extrabold text-sm text-white shadow-lg flex flex-col items-center justify-center" style="background: linear-gradient(135deg, var(--accent-2), #7c3aed);">
+            <span class="text-lg">⚡</span>
+            <span>ランダム10問</span>
+          </button>
+          <button onclick="startBattle('weak')" class="retro-btn px-4 py-3 rounded-xl font-extrabold text-sm border-2 flex flex-col items-center justify-center" style="border-color: #ef4444; background: rgba(239,68,68,0.18);">
+            <span class="text-lg">💀</span>
+            <span>苦手克服 (<span id="weakCountBadge">0</span>)</span>
+          </button>
+          <button onclick="startBattle('bookmark')" class="retro-btn px-4 py-3 rounded-xl font-extrabold text-sm border-2 flex flex-col items-center justify-center" style="border-color: #f59e0b; background: rgba(245,158,11,0.18);">
+            <span class="text-lg">★</span>
+            <span>要復習 (<span id="bookmarkCountBadge">0</span>)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 出題形式フィルター -->
+      <div class="rpg-card p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 font-retro text-sm sm:text-base font-bold" style="color: var(--accent-1);">
+          <span>🎯 出題形式フィルター:</span>
+        </div>
+        <div class="flex flex-wrap gap-2" id="typeFilterGroup">
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs sm:text-sm font-bold select-none" style="border-color: var(--border-color);">
+            <input type="checkbox" value="single" checked class="type-filter-cb accent-pink-500"> 4択問題
+          </label>
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs sm:text-sm font-bold select-none" style="border-color: var(--border-color);">
+            <input type="checkbox" value="multi" checked class="type-filter-cb accent-pink-500"> 複数選択
+          </label>
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs sm:text-sm font-bold select-none" style="border-color: var(--border-color);">
+            <input type="checkbox" value="input" checked class="type-filter-cb accent-pink-500"> 記述入力
+          </label>
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs sm:text-sm font-bold select-none" style="border-color: var(--border-color);">
+            <input type="checkbox" value="sort" checked class="type-filter-cb accent-pink-500"> 並び替え
+          </label>
+        </div>
+      </div>
+
+      <!-- 単元別ステージカード（衣生活①〜⑥） -->
+      <div>
+        <h2 class="font-retro text-xl font-bold mb-3 flex items-center gap-2" style="color: var(--accent-3);">
+          <span>🏰 単元別ボス討伐ステージ（衣生活①〜⑥）</span>
+        </h2>
+        <div id="stageGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- JSで自動生成 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. バトル（クイズ実行画面） ==================== -->
+    <section id="tab-battle" class="tab-section hidden space-y-4">
+      <!-- バトル上部HUD -->
+      <div class="rpg-card p-3 sm:p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2">
+            <button onclick="confirmExitBattle()" class="retro-btn px-3 py-1 rounded-lg text-xs font-bold border border-red-400/50 text-red-400 hover:bg-red-500/20">
+              🏃 撤退する
+            </button>
+            <span id="battleStageName" class="font-retro text-sm sm:text-base font-bold" style="color: var(--accent-1);"></span>
+          </div>
+          <div class="flex items-center gap-3 font-retro text-xs sm:text-sm">
+            <span id="comboDisplay" class="hidden combo-badge px-2.5 py-0.5 rounded-full font-black text-slate-950" style="background: var(--accent-3);">
+              0 COMBO!
+            </span>
+            <span>問題 <strong id="qCurrentNum" style="color: var(--accent-1);">1</strong> / <span id="qTotalNum">10</span></span>
+          </div>
+        </div>
+
+        <!-- バトルステージ（主人公 vs ボス） -->
+        <div id="battleArena" class="relative rounded-xl p-3 sm:p-5 border overflow-hidden grid grid-cols-2 gap-4 items-center"
+          style="border-color: var(--border-color); background: radial-gradient(circle at center, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.45) 100%);">
+
+          <!-- プレイヤー側 -->
+          <div class="flex flex-col items-center sm:items-start relative">
+            <div class="w-full max-w-[210px] mb-2">
+              <div class="flex justify-between text-xs font-retro font-bold mb-0.5">
+                <span style="color: var(--accent-1);">あなた (Lv.<span id="btlPlayerLv">1</span>)</span>
+                <span>HP <span id="btlPlayerHp">100</span>/<span id="btlPlayerMaxHp">100</span></span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden border border-white/20">
+                <div id="btlPlayerHpBar" class="h-full bg-emerald-400 transition-all duration-300" style="width: 100%;"></div>
+              </div>
+              <div class="flex justify-between text-[11px] font-retro mt-1">
+                <span class="text-sky-400">MP <span id="btlPlayerMp">50</span>/<span id="btlPlayerMaxMp">50</span></span>
+                <span class="text-amber-300" id="btlCharmIndicator"></span>
+              </div>
+            </div>
+            <div id="playerSpriteWrap" class="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center animate-idle">
+              <!-- SVG挿入 -->
+            </div>
+          </div>
+
+          <!-- 敵ボス側 -->
+          <div class="flex flex-col items-center sm:items-end relative">
+            <div class="w-full max-w-[210px] mb-2">
+              <div class="flex justify-between text-xs font-retro font-bold mb-0.5">
+                <span class="text-rose-400 truncate" id="btlEnemyName">テストの魔王</span>
+                <span>HP <span id="btlEnemyHp">100</span>/<span id="btlEnemyMaxHp">100</span></span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden border border-white/20">
+                <div id="btlEnemyHpBar" class="h-full bg-rose-500 transition-all duration-300" style="width: 100%;"></div>
+              </div>
+            </div>
+            <div id="enemySpriteWrap" class="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center animate-idle">
+              <!-- 敵SVG挿入 -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 問題カード -->
+      <div id="questionCard" class="rpg-card p-4 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="qUnitTag" class="px-2.5 py-1 rounded-lg text-xs font-extrabold text-slate-950" style="background: var(--accent-1);">衣生活①</span>
+            <span id="qTypeTag" class="px-2.5 py-1 rounded-lg text-xs font-bold border" style="border-color: var(--accent-2); color: var(--accent-2);">4択問題</span>
+          </div>
+          <button id="qBookmarkBtn" onclick="toggleCurrentBookmark()" class="retro-btn px-3 py-1 rounded-xl border text-xs sm:text-sm font-bold flex items-center gap-1" style="border-color: var(--border-color);">
+            <span id="qBookmarkStar">☆</span> 要復習登録
+          </button>
+        </div>
+
+        <!-- 問題文 -->
+        <div id="qText" class="text-base sm:text-lg md:text-xl font-bold leading-relaxed"></div>
+
+        <!-- ヒント表示エリア（アイテム使用時） -->
+        <div id="qHintBox" class="hidden p-3 rounded-xl border border-amber-400/50 bg-amber-500/15 text-amber-200 text-sm">
+          💡 <strong>ヒントの巻物：</strong><span id="qHintText"></span>
+        </div>
+
+        <!-- 回答エリア（出題形式ごとに動的描画） -->
+        <div id="answerArea" class="space-y-2.5 pt-1"></div>
+
+        <!-- バトルアイテムバー -->
+        <div class="pt-3 border-t flex flex-wrap items-center justify-between gap-2" style="border-color: var(--border-color);">
+          <span class="text-xs font-retro opacity-80">🎒 試験対策アイテム:</span>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="useBattleItem('hint')" id="btnItemHint" class="retro-btn px-2.5 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1" style="border-color: var(--border-color);">
+              📜 ヒントの巻物 (<span id="invHintCount">0</span>)
+            </button>
+            <button onclick="useBattleItem('fifty')" id="btnItemFifty" class="retro-btn px-2.5 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1" style="border-color: var(--border-color);">
+              🧪 50/50の薬 (<span id="invFiftyCount">0</span>)
+            </button>
+            <button onclick="useBattleItem('onigiri')" id="btnItemOnigiri" class="retro-btn px-2.5 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1" style="border-color: var(--border-color);">
+              🍙 HP回復おにぎり (<span id="invOnigiriCount">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- 解説＆次へボタン（回答後に表示） -->
+        <div id="explanationBox" class="hidden p-4 rounded-xl border-2 space-y-3" style="border-color: var(--accent-1); background: rgba(0,0,0,0.28);">
+          <div id="resultBanner" class="font-retro text-lg sm:text-xl font-black"></div>
+          <div id="correctAnswerDisplay" class="text-sm font-bold" style="color: var(--accent-3);"></div>
+          <p id="explanationText" class="text-sm sm:text-base leading-relaxed"></p>
+          <div class="pt-2 flex justify-end">
+            <button id="nextQuestionBtn" onclick="nextQuestion()" class="retro-btn px-6 py-3 rounded-xl font-extrabold text-slate-950 text-base shadow-lg" style="background: linear-gradient(135deg, var(--accent-3), var(--accent-1));">
+              次の問題へ ▶
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. ガチャ＆道具屋 ==================== -->
+    <section id="tab-gacha" class="tab-section hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- おまもりガチャ -->
+        <div class="rpg-card p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-retro text-xl font-bold" style="color: var(--accent-3);">⛩️ レトロおまもりガチャ</h2>
+            <span class="font-retro text-sm px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-400/40">
+              所持コイン: 🪙<span id="gachaCoins">0</span>
+            </span>
+          </div>
+          <p class="text-sm opacity-90">
+            コインを100枚使って「合格祈願おまもり」を引こう！装備するとバトル中の獲得EXPや攻撃力がアップするぞ！
+          </p>
+          <div class="p-6 rounded-2xl border-2 border-dashed text-center space-y-4" style="border-color: var(--accent-2); background: rgba(0,0,0,0.2);">
+            <div class="text-6xl animate-idle">🔮</div>
+            <button onclick="pullGacha()" class="retro-btn w-full sm:w-auto px-8 py-3.5 rounded-xl font-extrabold text-base text-white shadow-lg" style="background: linear-gradient(135deg, var(--accent-2), #9333ea);">
+              ✨ 1回ガチャを引く (🪙100)
+            </button>
+          </div>
+
+          <div>
+            <h3 class="font-retro text-base font-bold mb-2" style="color: var(--accent-1);">所持おまもり一覧（クリックで装備）</h3>
+            <div id="charmList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+          </div>
+        </div>
+
+        <!-- 試験対策道具屋 -->
+        <div class="rpg-card p-5 sm:p-6 space-y-4">
+          <h2 class="font-retro text-xl font-bold" style="color: var(--accent-1);">🏪 家庭科・試験対策道具屋</h2>
+          <p class="text-sm opacity-90">
+            クイズバトル中に使える便利アイテムを購入できます。難問やボス戦に備えよう！
+          </p>
+          <div class="space-y-3" id="shopList">
+            <!-- JS生成 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. 暗記カード（フラッシュカード） ==================== -->
+    <section id="tab-flashcards" class="tab-section hidden space-y-4">
+      <div class="rpg-card p-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="font-retro text-xl font-bold" style="color: var(--accent-3);">🃏 重要キーワード暗記カード</h2>
+        <select id="fcUnitFilter" onchange="filterFlashcards()" class="px-3 py-1.5 rounded-xl border text-sm font-bold" style="background-color: var(--bg-card-solid); border-color: var(--border-color);">
+          <option value="all">すべての単元（衣生活①〜⑥）</option>
+          <option value="衣生活①">衣生活①（寝衣・起源・機能）</option>
+          <option value="衣生活②">衣生活②（衣服の歴史・民族服）</option>
+          <option value="衣生活③">衣生活③（構造と構成・刺し子）</option>
+          <option value="衣生活④">衣生活④（繊維・混紡・布）</option>
+          <option value="衣生活⑤">衣生活⑤（汚れ・洗濯・絵表示・保管）</option>
+          <option value="衣生活⑥">衣生活⑥（ファスト＆サスティナブル）</option>
+        </select>
+      </div>
+
+      <div class="max-w-2xl mx-auto space-y-4">
+        <div onclick="flipFlashcard()" id="flashcardBox" class="rpg-card min-h-[260px] sm:min-h-[300px] p-6 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer select-none border-2 relative" style="border-color: var(--accent-1);">
+          <span id="fcUnitBadge" class="absolute top-4 left-4 px-2.5 py-1 rounded-lg text-xs font-extrabold text-slate-950" style="background: var(--accent-1);">衣生活①</span>
+          <span id="fcSideBadge" class="absolute top-4 right-4 px-2.5 py-1 rounded-lg text-xs font-bold border" style="border-color: var(--accent-3); color: var(--accent-3);">表面（タップで裏返す）</span>
+          <div id="fcContent" class="text-xl sm:text-2xl md:text-3xl font-extrabold leading-relaxed mt-4"></div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3">
+          <button onclick="prevFlashcard()" class="retro-btn px-5 py-3 rounded-xl border font-bold text-sm sm:text-base" style="border-color: var(--border-color);">
+            ◀ 前のカード
+          </button>
+          <span class="font-retro text-sm sm:text-base font-bold"><span id="fcIndex">1</span> / <span id="fcTotal">30</span></span>
+          <button onclick="nextFlashcard()" class="retro-btn px-5 py-3 rounded-xl font-bold text-sm sm:text-base text-slate-950" style="background: var(--accent-1);">
+            次のカード ▶
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. 重要まとめノート ==================== -->
+    <section id="tab-notes" class="tab-section hidden space-y-6">
+      <div class="rpg-card p-5 sm:p-6">
+        <h2 class="font-retro text-2xl font-bold mb-2" style="color: var(--accent-3);">📜 テスト直前！重要まとめノート</h2>
+        <p class="text-sm opacity-85">数値データ・比較表・衣服の起源6説・三大刺し子・JIS取り扱い絵表示など、試験に直結する重要図表を凝縮！</p>
+      </div>
+
+      <!-- 数値データ＆睡眠比較 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="rpg-card p-5 space-y-3">
+          <h3 class="font-retro text-lg font-bold border-b pb-2" style="color: var(--accent-1); border-color: var(--border-color);">
+            🌙 衣生活①：寝衣と睡眠の重要数値データ
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+              <thead>
+                <tr class="border-b" style="border-color: var(--border-color); color: var(--accent-3);">
+                  <th class="py-2 px-2">項目</th>
+                  <th class="py-2 px-2">パジャマ</th>
+                  <th class="py-2 px-2">スウェット</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/10">
+                <tr>
+                  <td class="py-2 px-2 font-bold">寝つき時間（入眠潜時）</td>
+                  <td class="py-2 px-2 font-extrabold text-emerald-400">0時間38分</td>
+                  <td class="py-2 px-2 text-rose-400">0時間47分</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-bold">夜中に目が覚める回数</td>
+                  <td class="py-2 px-2 font-extrabold text-emerald-400">2.67回</td>
+                  <td class="py-2 px-2 text-rose-400">3.55回</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-bold">一晩の睡眠中の発汗量</td>
+                  <td colspan="2" class="py-2 px-2 font-bold text-sky-400">約 200〜500 ml（コップ1〜2.5杯分）</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-bold">理想的な寝床内気候</td>
+                  <td colspan="2" class="py-2 px-2 font-bold text-amber-300">温度 32〜34℃ / 湿度 45〜55%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs opacity-80">※寝返りは一晩に約20〜30回。パジャマは吸湿性・通気性・ゆとりに優れ、深部体温の低下を助ける。</p>
+        </div>
+
+        <!-- 衣服の起源6説 -->
+        <div class="rpg-card p-5 space-y-3">
+          <h3 class="font-retro text-lg font-bold border-b pb-2" style="color: var(--accent-1); border-color: var(--border-color);">
+            🏛️ 衣生活①：衣服の起源 6つの説
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li><strong class="text-amber-300">① 身体保護説：</strong>寒さ・暑さ・ケガ・虫など自然環境から身を守るため。</li>
+            <li><strong class="text-amber-300">② 装飾説：</strong>他者より目立ちたい、美しく見せたいという本能から（最も有力視される説の一つ）。</li>
+            <li><strong class="text-amber-300">③ 羞恥説：</strong>性器や肌を隠す恥ずかしさの感情から生まれたとする説。</li>
+            <li><strong class="text-amber-300">④ 呪術（魔除け）説：</strong>悪霊や災いから身を守るためのお守り・呪術的装飾から。</li>
+            <li><strong class="text-amber-300">⑤ 象徴（階級・身分）説：</strong>集団内での地位・権力・職業・所属を示すため。</li>
+            <li><strong class="text-amber-300">⑥ 異性吸引説：</strong>異性の関心を惹きつけるために体を飾ったとする説。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 衣服の歴史＆構造・三大刺し子 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="rpg-card p-5 space-y-3">
+          <h3 class="font-retro text-lg font-bold border-b pb-2" style="color: var(--accent-1); border-color: var(--border-color);">
+            👘 衣生活②・③：衣服の形状分類と日本三大刺し子
+          </h3>
+          <div class="text-sm space-y-2">
+            <p><strong style="color: var(--accent-2);">【衣服の3大形状分類】</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>懸衣（けんい）：</strong>布を体に巻きつける・掛ける（例：古代ギリシャのキトン、インドのサリー）</li>
+              <li><strong>貫頭衣（かんとうい）：</strong>布の中央に穴をあけて頭を通す（例：弥生時代の衣、南米のポンチョ）</li>
+              <li><strong>体形衣（たいけいい）：</strong>体に合わせて裁断・縫製する（例：現代の洋服、和服）</li>
+            </ul>
+            <p class="pt-2"><strong style="color: var(--accent-2);">【日本三大刺し子（寒冷地での保温・補強の知恵）】</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>こぎん刺し</strong>（青森県・津軽地方）：麻布の目を埋める幾何学模様</li>
+              <li><strong>菱刺し（南部菱刺し）</strong>（青森県・南部地方）：横長の菱形模様が特徴</li>
+              <li><strong>庄内刺し子</strong>（山形県・庄内地方）：米刺し・柿の花などの伝統柄</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 繊維の分類と特徴 -->
+        <div class="rpg-card p-5 space-y-3">
+          <h3 class="font-retro text-lg font-bold border-b pb-2" style="color: var(--accent-1); border-color: var(--border-color);">
+            🧵 衣生活④：繊維の分類と代表例
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs sm:text-sm text-left border-collapse">
+              <thead>
+                <tr class="border-b" style="border-color: var(--border-color); color: var(--accent-3);">
+                  <th class="py-1.5 px-2">大分類</th>
+                  <th class="py-1.5 px-2">小分類</th>
+                  <th class="py-1.5 px-2">主な繊維と特徴</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/10">
+                <tr>
+                  <td rowspan="2" class="py-1.5 px-2 font-bold">天然繊維</td>
+                  <td class="py-1.5 px-2 font-bold text-emerald-400">植物繊維<br>(セルロース)</td>
+                  <td class="py-1.5 px-2"><strong>綿（コットン）</strong>：吸水性◎・熱に強い<br><strong>麻（リネン等）</strong>：熱伝導率大・シャリ感・シワになりやすい</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-2 font-bold text-amber-400">動物繊維<br>(タンパク質)</td>
+                  <td class="py-1.5 px-2"><strong>羊毛（ウール）</strong>：保温性・弾力性◎・フェルト化（縮絨）に注意<br><strong>絹（シルク）</strong>：光沢・肌触り◎・アルカリや日光（黄変）に弱い</td>
+                </tr>
+                <tr>
+                  <td rowspan="3" class="py-1.5 px-2 font-bold">化学繊維</td>
+                  <td class="py-1.5 px-2 font-bold text-sky-400">再生繊維</td>
+                  <td class="py-1.5 px-2"><strong>レーヨン・キュプラ</strong>：木材パルプやコットンリンター原料。吸湿性◎だが水に濡れると強度低下</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-2 font-bold text-purple-400">半合成繊維</td>
+                  <td class="py-1.5 px-2"><strong>アセテート</strong>：天然セルロース＋酢酸。絹のような光沢</td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-2 font-bold text-pink-400">合成繊維</td>
+                  <td class="py-1.5 px-2"><strong>ポリエステル</strong>（生産量最多・速乾・シワになりにくい）、<strong>ナイロン</strong>（摩擦に強い）、<strong>アクリル</strong>（羊毛に似た保温性）</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 洗濯・JIS取り扱い絵表示・サスティナブル -->
+      <div class="rpg-card p-5 space-y-4">
+        <h3 class="font-retro text-lg font-bold border-b pb-2" style="color: var(--accent-1); border-color: var(--border-color);">
+          🧺 衣生活⑤・⑥：JIS取り扱い絵表示（5つの基本記号）＆汚れ・環境問題
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-center text-xs sm:text-sm">
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-2xl mb-1">🪣</div>
+            <div class="font-bold" style="color: var(--accent-3);">1. 家庭洗濯</div>
+            <p class="mt-1 opacity-85">桶のマーク。数字は上限温度（例: 40）。下線1本は「弱い」、2本は「非常に弱い」、手は「手洗い」、×は家庭洗濯禁止。</p>
+          </div>
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-2xl mb-1">△</div>
+            <div class="font-bold" style="color: var(--accent-3);">2. 漂白</div>
+            <p class="mt-1 opacity-85">三角形。無地は塩素・酸素系OK、斜線2本は酸素系のみOK、×は漂白禁止。</p>
+          </div>
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-2xl mb-1">⬜</div>
+            <div class="font-bold" style="color: var(--accent-3);">3. 乾燥</div>
+            <p class="mt-1 opacity-85">四角形。中に丸はタンブル乾燥（点2つ高温、1つ低温）。縦線はつり干し、横線は平干し、左上斜線は日陰干し。</p>
+          </div>
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-2xl mb-1">♨️</div>
+            <div class="font-bold" style="color: var(--accent-3);">4. アイロン</div>
+            <p class="mt-1 opacity-85">アイロン型。点3つ＝200℃上限、点2つ＝150℃上限、点1つ＝110℃上限（スチームなし）。</p>
+          </div>
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-2xl mb-1">⭕</div>
+            <div class="font-bold" style="color: var(--accent-3);">5. クリーニング</div>
+            <p class="mt-1 opacity-85">円形。P・Fはドライクリーニング（有機溶剤）、Wはウエットクリーニング（プロの水洗い）。</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm pt-2">
+          <div class="p-3 rounded-xl bg-white/5">
+            <strong style="color: var(--accent-2);">【汚れの3分類と落とし方】</strong>
+            <ul class="list-disc list-inside mt-1 space-y-1">
+              <li><strong>水溶性汚れ</strong>（汗・果汁・しょうゆ）：水で落ちる。</li>
+              <li><strong>油溶性汚れ</strong>（皮脂・口紅・機械油）：洗剤（界面活性剤）や有機溶剤で落とす。</li>
+              <li><strong>不溶性汚れ</strong>（泥・すす・ほこり）：繊維の奥に入り込むため物理的な力（もみ洗い等）が必要。</li>
+            </ul>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5">
+            <strong style="color: var(--accent-2);">【ファストファッションとサスティナブル】</strong>
+            <ul class="list-disc list-inside mt-1 space-y-1">
+              <li>大量生産・大量消費・大量廃棄による環境負荷（CO2排出・水質汚染・マイクロプラスチック問題）。</li>
+              <li><strong>3R＋R：</strong>リデュース・リユース・リサイクル＋<strong>リペア（修繕）</strong>。</li>
+              <li><strong>エシカルファッション / スローファッション：</strong>環境や生産者（フェアトレード）に配慮した持続可能な衣生活。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 6. 用語辞典 ==================== -->
+    <section id="tab-dictionary" class="tab-section hidden space-y-4">
+      <div class="rpg-card p-4 sm:p-6 space-y-3">
+        <h2 class="font-retro text-xl font-bold" style="color: var(--accent-3);">📖 家庭総合・衣生活 キーワード検索辞典</h2>
+        <input type="text" id="dictSearchInput" oninput="renderDictionary()" placeholder="🔍 用語やキーワードを入力（例：界面活性剤、貫頭衣、混紡、JIS、フェルト化...）"
+          class="w-full px-4 py-3 rounded-xl border-2 text-sm sm:text-base font-bold focus:outline-none"
+          style="background-color: var(--bg-card-solid); border-color: var(--accent-1); color: var(--text-main);">
+      </div>
+      <div id="dictionaryGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- ==================== 7. 戦績・弱点分析 ==================== -->
+    <section id="tab-stats" class="tab-section hidden space-y-6">
+      <div class="rpg-card p-5 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="font-retro text-xl font-bold" style="color: var(--accent-3);">📊 単元別正答率＆学習データ分析</h2>
+          <button onclick="confirmResetProgress()" class="retro-btn px-3 py-1.5 rounded-xl border border-red-500/60 text-red-400 text-xs font-bold hover:bg-red-500/20">
+            🗑️ 学習データを初期化
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-xs opacity-75">総回答数</div>
+            <div class="font-retro text-2xl font-black mt-1" style="color: var(--accent-1);" id="statTotalAnswered">0</div>
+          </div>
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-xs opacity-75">総合正答率</div>
+            <div class="font-retro text-2xl font-black mt-1 text-emerald-400" id="statAccuracy">0%</div>
+          </div>
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-xs opacity-75">最大コンボ</div>
+            <div class="font-retro text-2xl font-black mt-1 text-amber-300" id="statMaxCombo">0</div>
+          </div>
+          <div class="p-3 rounded-xl border bg-black/20" style="border-color: var(--border-color);">
+            <div class="text-xs opacity-75">現在レベル</div>
+            <div class="font-retro text-2xl font-black mt-1 text-pink-400">Lv.<span id="statLevel">1</span></div>
+          </div>
+        </div>
+
+        <!-- 単元別正答率バーグラフ -->
+        <div class="space-y-3 pt-2" id="unitStatsBars">
+          <!-- JS生成 -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. Web Audio API によるレトロ8bit効果音エンジン（外部音声URL不使用）
+    // =========================================================================
+    class RetroAudio {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'square', duration = 0.12, delay = 0, vol = 0.12) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime + delay;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      }
+      click() { this.playTone(660, 'square', 0.06, 0, 0.08); }
+      correct() {
+        this.playTone(523.25, 'square', 0.09, 0, 0.12);     // C5
+        this.playTone(659.25, 'square', 0.09, 0.08, 0.12);  // E5
+        this.playTone(783.99, 'square', 0.09, 0.16, 0.12);  // G5
+        this.playTone(1046.5, 'square', 0.22, 0.24, 0.14);  // C6
+      }
+      wrong() {
+        this.playTone(220, 'sawtooth', 0.16, 0, 0.14);
+        this.playTone(164.81, 'sawtooth', 0.28, 0.14, 0.14);
+      }
+      levelUp() {
+        const notes = [523.25, 523.25, 523.25, 523.25, 415.3, 466.16, 523.25, 466.16, 523.25];
+        const times = [0, 0.11, 0.22, 0.33, 0.48, 0.63, 0.78, 0.92, 1.05];
+        const durs  = [0.09, 0.09, 0.09, 0.12, 0.12, 0.12, 0.11, 0.11, 0.35];
+        notes.forEach((n, i) => this.playTone(n, 'square', durs[i], times[i], 0.14));
+      }
+      gacha() {
+        for (let i = 0; i < 8; i++) {
+          this.playTone(300 + i * 95, 'triangle', 0.07, i * 0.06, 0.12);
+        }
+        this.playTone(1174.66, 'square', 0.3, 0.5, 0.15);
+      }
+    }
+    const sfx = new RetroAudio();
+
+    // =========================================================================
+    // 2. ドット絵風 SVG キャラクター＆ボスデータ
+    // =========================================================================
+    const HERO_SVG = `
+      <svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="5" y="1" width="6" height="2" fill="#3b82f6"/>
+        <rect x="4" y="3" width="8" height="2" fill="#60a5fa"/>
+        <rect x="5" y="5" width="6" height="4" fill="#fde68a"/>
+        <rect x="6" y="6" width="1" height="1" fill="#0f172a"/>
+        <rect x="9" y="6" width="1" height="1" fill="#0f172a"/>
+        <rect x="4" y="9" width="8" height="4" fill="#ef4444"/>
+        <rect x="6" y="9" width="4" height="4" fill="#f8fafc"/>
+        <rect x="2" y="9" width="2" height="3" fill="#fde68a"/>
+        <rect x="12" y="9" width="2" height="3" fill="#fde68a"/>
+        <rect x="13" y="4" width="1" height="6" fill="#e2e8f0"/>
+        <rect x="12" y="8" width="3" height="1" fill="#f59e0b"/>
+        <rect x="5" y="13" width="2" height="3" fill="#1e293b"/>
+        <rect x="9" y="13" width="2" height="3" fill="#1e293b"/>
+      </svg>`;
+
+    const BOSS_SVGS = {
+      '衣生活①': `<svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="4" y="2" width="8" height="8" fill="#818cf8"/>
+        <rect x="2" y="4" width="12" height="5" fill="#6366f1"/>
+        <rect x="5" y="5" width="2" height="2" fill="#fef08a"/>
+        <rect x="9" y="5" width="2" height="2" fill="#fef08a"/>
+        <rect x="6" y="8" width="4" height="1" fill="#1e1b4b"/>
+        <rect x="3" y="10" width="2" height="3" fill="#4f46e5"/>
+        <rect x="7" y="10" width="2" height="4" fill="#4f46e5"/>
+        <rect x="11" y="10" width="2" height="3" fill="#4f46e5"/>
+      </svg>`,
+      '衣生活②': `<svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="3" y="1" width="2" height="3" fill="#f59e0b"/>
+        <rect x="11" y="1" width="2" height="3" fill="#f59e0b"/>
+        <rect x="4" y="3" width="8" height="9" fill="#dc2626"/>
+        <rect x="5" y="5" width="2" height="2" fill="#ffffff"/>
+        <rect x="9" y="5" width="2" height="2" fill="#ffffff"/>
+        <rect x="5" y="9" width="6" height="2" fill="#fde047"/>
+        <rect x="3" y="12" width="3" height="3" fill="#7f1d1d"/>
+        <rect x="10" y="12" width="3" height="3" fill="#7f1d1d"/>
+      </svg>`,
+      '衣生活③': `<svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="4" y="2" width="8" height="10" fill="#10b981"/>
+        <rect x="6" y="3" width="4" height="1" fill="#ecfdf5"/>
+        <rect x="5" y="5" width="6" height="1" fill="#ecfdf5"/>
+        <rect x="6" y="7" width="4" height="1" fill="#ecfdf5"/>
+        <rect x="5" y="6" width="2" height="2" fill="#064e3b"/>
+        <rect x="9" y="6" width="2" height="2" fill="#064e3b"/>
+        <rect x="2" y="6" width="2" height="4" fill="#059669"/>
+        <rect x="12" y="6" width="2" height="4" fill="#059669"/>
+        <rect x="5" y="12" width="2" height="3" fill="#065f46"/>
+        <rect x="9" y="12" width="2" height="3" fill="#065f46"/>
+      </svg>`,
+      '衣生活④': `<svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="3" y="2" width="10" height="10" fill="#f472b6"/>
+        <rect x="2" y="4" width="12" height="6" fill="#ec4899"/>
+        <rect x="5" y="5" width="2" height="2" fill="#fff"/>
+        <rect x="9" y="5" width="2" height="2" fill="#fff"/>
+        <rect x="6" y="8" width="4" height="2" fill="#831843"/>
+        <rect x="4" y="12" width="3" height="3" fill="#be185d"/>
+        <rect x="9" y="12" width="3" height="3" fill="#be185d"/>
+      </svg>`,
+      '衣生活⑤': `<svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="5" y="1" width="6" height="2" fill="#38bdf8"/>
+        <rect x="3" y="3" width="10" height="8" fill="#0284c7"/>
+        <rect x="5" y="5" width="2" height="2" fill="#fef08a"/>
+        <rect x="9" y="5" width="2" height="2" fill="#fef08a"/>
+        <rect x="4" y="9" width="8" height="2" fill="#e0f2fe"/>
+        <rect x="5" y="11" width="6" height="4" fill="#0369a1"/>
+      </svg>`,
+      '衣生活⑥': `<svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="2" y="2" width="3" height="4" fill="#a855f7"/>
+        <rect x="11" y="2" width="3" height="4" fill="#a855f7"/>
+        <rect x="4" y="3" width="8" height="9" fill="#7e22ce"/>
+        <rect x="5" y="5" width="2" height="2" fill="#ef4444"/>
+        <rect x="9" y="5" width="2" height="2" fill="#ef4444"/>
+        <rect x="5" y="9" width="6" height="2" fill="#facc15"/>
+        <rect x="3" y="12" width="4" height="3" fill="#581c87"/>
+        <rect x="9" y="12" width="4" height="3" fill="#581c87"/>
+      </svg>`,
+      'default': `<svg viewBox="0 0 16 16" class="w-full h-full" shape-rendering="crispEdges">
+        <rect x="4" y="1" width="2" height="2" fill="#facc15"/>
+        <rect x="10" y="1" width="2" height="2" fill="#facc15"/>
+        <rect x="3" y="3" width="10" height="10" fill="#e11d48"/>
+        <rect x="5" y="5" width="2" height="2" fill="#fef08a"/>
+        <rect x="9" y="5" width="2" height="2" fill="#fef08a"/>
+        <rect x="5" y="9" width="6" height="2" fill="#0f172a"/>
+        <rect x="4" y="13" width="3" height="3" fill="#881337"/>
+        <rect x="9" y="13" width="3" height="3" fill="#881337"/>
+      </svg>`
+    };
+
+    const STAGES = [
+      { id: '衣生活①', title: '衣生活①：眠りと起源の神殿', boss: 'ネムリ・ゴースト', desc: '寝衣の機能・睡眠データ・衣服の起源6説・保健衛生的機能', color: '#6366f1' },
+      { id: '衣生活②', title: '衣生活②：時空の民族回廊', boss: 'カコノ・ダイマジン', desc: '衣服の3大形状・西洋服飾史・和服の変遷と民族衣装', color: '#dc2626' },
+      { id: '衣生活③', title: '衣生活③：縫製と刺し子の砦', boss: 'サシコ・ガーディアン', desc: '立体構成と平面構成・日本の三大刺し子・衣服の設計', color: '#10b981' },
+      { id: '衣生活④', title: '衣生活④：繊維と織物の迷宮', boss: 'センイ・キメラ', desc: '天然繊維と化学繊維・混紡・三原組織（平織・綾織・朱子織）', color: '#ec4899' },
+      { id: '衣生活⑤', title: '衣生活⑤：洗濯と絵表示の魔城', boss: 'センタクの魔神', desc: '汚れの分類・界面活性剤・JIS取り扱い絵表示・保管と防虫', color: '#0284c7' },
+      { id: '衣生活⑥', title: '衣生活⑥：サスティナブル最終決戦', boss: 'ファストファッション竜', desc: '大量廃棄問題・マイクロプラスチック・3R+R・エシカル消費', color: '#7e22ce' }
+    ];
+
+    // =========================================================================
+    // 3. オリジナル問題データベース（全75問・衣生活①〜⑥完全準拠）
+    //    type: 'single' (4択), 'multi' (複数選択), 'input' (記述), 'sort' (並び替え)
+    // =========================================================================
+    const QUESTIONS = [
+      // --- 衣生活①（13問） ---
+      {
+        id: 1, unit: '衣生活①', type: 'single',
+        q: '人が一晩の睡眠中にかく汗（発汗量）は、およそどのくらいか。',
+        options: ['約200〜500ml', '約10〜30ml', '約1,500〜2,000ml', '約3,000ml以上'],
+        answer: 0,
+        hint: 'コップ1杯〜2.5杯分くらいの量です。',
+        exp: '人は一晩の睡眠中にコップ1〜2.5杯分にあたる約200〜500mlの汗をかきます。そのため寝衣には高い吸湿性・吸水性が求められます。'
+      },
+      {
+        id: 2, unit: '衣生活①', type: 'single',
+        q: 'パジャマとスウェットを着用して就寝した際の「寝つき時間（入眠潜時）」の比較データとして正しいものはどれか。',
+        options: ['パジャマ 0時間38分 ／ スウェット 0時間47分', 'パジャマ 0時間47分 ／ スウェット 0時間38分', 'パジャマ 0時間15分 ／ スウェット 1時間10分', '両者とも全く同じ 0時間40分'],
+        answer: 0,
+        hint: 'パジャマの方が約9分早く眠りにつけます。',
+        exp: '実験データによると、寝つき時間はパジャマが「0時間38分」、スウェットが「0時間47分」であり、パジャマの方がスムーズに入眠できます。'
+      },
+      {
+        id: 3, unit: '衣生活①', type: 'single',
+        q: '夜中に目が覚める回数（中途覚醒回数）の比較データで、パジャマ着用時は平均何回か。',
+        options: ['2.67回', '3.55回', '0.50回', '5.20回'],
+        answer: 0,
+        hint: 'スウェットの3.55回よりも少ない数値です。',
+        exp: '夜中に目が覚める回数は、スウェットの3.55回に対し、パジャマは2.67回と少なく、深い睡眠が保たれやすいことがわかっています。'
+      },
+      {
+        id: 4, unit: '衣生活①', type: 'input',
+        q: '衣服の起源に関する6つの説のうち、「寒さや暑さ、ケガや外敵など自然環境から身を守るために衣服が生まれた」とする説を「〇〇〇〇説」というか。漢字4字で答えよ。',
+        accept: ['身体保護', '身体保護説', 'しんたいほご', 'しんたいほごせつ'],
+        displayAnswer: '身体保護（身体保護説）',
+        hint: '「体を守る」という意味の四字熟語です。',
+        exp: '衣服の起源6説は「身体保護説・装飾説・羞恥説・呪術説・象徴説・異性吸引説」です。自然環境から身を守る説は身体保護説です。'
+      },
+      {
+        id: 5, unit: '衣生活①', type: 'multi',
+        q: '衣服の起源に関する「6つの説」に含まれるものをすべて選べ。',
+        options: ['装飾説', '呪術（魔除け）説', '象徴（階級・身分）説', '経済流通説'],
+        answer: [0, 1, 2],
+        hint: 'お金や商売に関する説は含まれません。',
+        exp: '衣服の起源6説は、身体保護説・装飾説・羞恥説・呪術説・象徴説・異性吸引説の6つです。経済流通説は含まれません。'
+      },
+      {
+        id: 6, unit: '衣生活①', type: 'single',
+        q: '快適な睡眠を得るための理想的な「寝床内気候（ふとんの中の温度と湿度）」はどれか。',
+        options: ['温度 32〜34℃ ／ 湿度 45〜55%', '温度 20〜22℃ ／ 湿度 20〜30%', '温度 38〜40℃ ／ 湿度 80〜90%', '温度 15〜18℃ ／ 湿度 60〜70%'],
+        answer: 0,
+        hint: '体温より少し低い33℃前後、湿度は約50%が理想です。',
+        exp: '理想的な寝床内気候は「温度32〜34℃、湿度45〜55%」です。寝衣にはこの環境を保つ調温・調湿機能が求められます。'
+      },
+      {
+        id: 7, unit: '衣生活①', type: 'single',
+        q: '人は一晩の睡眠中に平均して何回くらい「寝返り」を打つか。',
+        options: ['約20〜30回', '約1〜2回', '約80〜100回', '0回（動かないのが理想）'],
+        answer: 0,
+        hint: '1時間に数回、一晩で20〜30回ほど打ちます。',
+        exp: '人は一晩に約20〜30回の寝返りを打ち、体圧の分散や寝床内の空気の入れ替えを行っています。締め付けの少ない寝衣が適しています。'
+      },
+      {
+        id: 8, unit: '衣生活①', type: 'input',
+        q: '衣服の働きは大きく「保健衛生的機能」と「〇〇〇〇機能」の2つに大別される。空欄に入る漢字4字を答えよ。',
+        accept: ['社会的機能', '社会的', 'しゃかいてき', 'しゃかいてききのう'],
+        displayAnswer: '社会的機能（社会的）',
+        hint: 'TPOやマナー、個性表現など人間関係に関わる機能です。',
+        exp: '衣服の機能は、生命維持や快適性に関わる「保健衛生的機能」と、TPO・礼儀・所属・個性表現に関わる「社会的機能」に大別されます。'
+      },
+      {
+        id: 9, unit: '衣生活①', type: 'single',
+        q: '衣服の「保健衛生的機能」に含まれるものはどれか。',
+        options: ['体温調節や皮膚の清潔保持', '式典での礼装による敬意の表現', '制服による所属集団の明示', 'ファッションによる個性の主張'],
+        answer: 0,
+        hint: '健康や生理的な快適さに関わるものです。',
+        exp: '体温調節、吸湿・放湿、外傷からの保護、皮膚の清潔保持などは「保健衛生的機能」です。他の3つは「社会的機能」です。'
+      },
+      {
+        id: 10, unit: '衣生活①', type: 'single',
+        q: 'パジャマに前開きボタンがついている主な理由として最も適切なものはどれか。',
+        options: ['着脱しやすく、胸元を開けて温度・湿度調節がしやすいため', '装飾を増やして高級感を出すため', 'うつ伏せ寝を防止するため', '洗濯機で絡まりやすくするため'],
+        answer: 0,
+        hint: '着替えやすさと寝床内気候の調整に関係します。',
+        exp: '前開き構造は、寝起きで体が硬い時や体調不良時にも着脱しやすく、ボタンの開閉で放熱・換気しやすい利点があります。'
+      },
+      {
+        id: 11, unit: '衣生活①', type: 'multi',
+        q: '日常着（普段着）のまま寝ること（パジャマに着替えないこと）のデメリットとして適切なものをすべて選べ。',
+        options: ['衣類についたホコリや花粉を寝具に持ち込む', '入眠のスイッチが入りにくく睡眠の質が下がる', '締め付けや縫い目により寝返りが妨げられる', '発汗量がゼロになり脱水症状になる'],
+        answer: [0, 1, 2],
+        hint: '衛生面・心理面・運動面の3つのデメリットがあります。',
+        exp: '普段着のまま寝ると、外気の汚れの持ち込み、心理的な切り替え不足、寝返りの妨げなどが生じます。'
+      },
+      {
+        id: 12, unit: '衣生活①', type: 'single',
+        q: '時・場所・場合に応じて服装を選ぶ考え方を英語の頭文字をとって何というか。',
+        options: ['TPO', 'JIS', 'SDGs', 'DIY'],
+        answer: 0,
+        hint: 'Time（時）・Place（場所）・Occasion（場合）の略です。',
+        exp: 'Time（時間）、Place（場所）、Occasion（場合）の頭文字をとった和製英語で、社会的機能における重要なマナーです。'
+      },
+      {
+        id: 13, unit: '衣生活①', type: 'input',
+        q: '衣服の起源6説のうち、「他者よりも目立ちたい、美しく見せたいという本能から衣服が生まれた」とする説を「〇〇説」というか。漢字2字で答えよ。',
+        accept: ['装飾', '装飾説', 'そうしょく', 'そうしょくせつ'],
+        displayAnswer: '装飾（装飾説）',
+        hint: 'アクセサリーやボディペインティングに通じる言葉です。',
+        exp: '未開社会でも裸体であっても装飾品だけは身につける事例が多いことから、装飾説は最も有力視される説の一つです。'
+      },
+
+      // --- 衣生活②（12問） ---
+      {
+        id: 14, unit: '衣生活②', type: 'single',
+        q: '布を裁断せず、体に巻きつけたり肩に掛けたりして着用する衣服の形状分類を何というか。',
+        options: ['懸衣（けんい）', '貫頭衣（かんとうい）', '体形衣（たいけいい）', '前開衣（ぜんかいい）'],
+        answer: 0,
+        hint: 'インドのサリーや古代ギリシャのキトンが代表例です。',
+        exp: '懸衣（けんい）は1枚の布を体に巻きつける形式で、熱帯・亜熱帯地域や古代地中海世界で発達しました。'
+      },
+      {
+        id: 15, unit: '衣生活②', type: 'input',
+        q: '布の中央に穴をあけて頭を通し、脇を縫うなどして着用する衣服の形式（弥生時代の衣やポンチョなど）を何というか。漢字3字で答えよ。',
+        accept: ['貫頭衣', 'かんとうい'],
+        displayAnswer: '貫頭衣',
+        hint: '「頭を貫く衣」と書きます。',
+        exp: '貫頭衣（かんとうい）は布に穴をあけて頭を通すシンプルな構造で、日本の弥生時代や中南米のポンチョに見られます。'
+      },
+      {
+        id: 16, unit: '衣生活②', type: 'single',
+        q: '体の立体的な形に合わせて布を裁断・縫製して作る衣服の形状分類を何というか。',
+        options: ['体形衣（たいけいい）', '懸衣（けんい）', '貫頭衣（かんとうい）', '腰巻衣（こしまきい）'],
+        answer: 0,
+        hint: '現代の洋服や和服がこれにあたります。',
+        exp: '体形衣は人間の体形に合わせてパーツを裁断・縫製する衣服で、寒冷地での保温や活動性の向上とともに発達しました。'
+      },
+      {
+        id: 17, unit: '衣生活②', type: 'sort',
+        q: '次の日本の衣服・服飾の歴史を、時代が古い順に正しく並び替えよ。',
+        items: ['貫頭衣（弥生時代）', '十二単（平安時代）', '小袖の普及（室町〜江戸時代）', '鹿鳴館での洋装化（明治時代）'],
+        hint: '弥生 → 平安 → 江戸 → 明治の順です。',
+        exp: '弥生時代の「貫頭衣」→平安時代の公家装束「十二単」→江戸時代の庶民の普段着「小袖」→明治時代の文明開化による「洋装化」の順です。'
+      },
+      {
+        id: 18, unit: '衣生活②', type: 'single',
+        q: '平安時代の貴族女性が着用した「十二単（じゅうにひとえ）」の正式名称はどれか。',
+        options: ['女房装束（にょうぼうしょうぞく）', '束帯（そくたい）', '直垂（ひたたれ）', '狩衣（かりぎぬ）'],
+        answer: 0,
+        hint: '宮中に仕える女房たちの正装という意味です。',
+        exp: '十二単は通称であり、正式名称は「女房装束（または五衣唐衣裳：いつつぎぬからぎぬも）」といいます。男性の正装は束帯です。'
+      },
+      {
+        id: 19, unit: '衣生活②', type: 'single',
+        q: '日本の和服（着物）の着付けにおいて、男女問わず必ず守るべき襟の合わせ方はどれか。',
+        options: ['右前（自分から見て右側の襟を先に体に当て、左側の襟を上に重ねる）', '左前（自分から見て左側の襟を先に体に当て、右側の襟を上に重ねる）', '男性は右前、女性は左前', '季節によって左右を変える'],
+        answer: 0,
+        hint: '相手から見て「y」の字になる合わせ方です。',
+        exp: '和服は必ず「右前」に着ます。左前は死装束（亡くなった人に着せる着方）となるためタブーです。'
+      },
+      {
+        id: 20, unit: '衣生活②', type: 'single',
+        q: '19世紀末〜20世紀初頭に、コルセットによる極端な締め付けから女性を解放し、ゆったりとしたドレスを提唱したフランスのデザイナーは誰か。',
+        options: ['ポール・ポワレ', 'クリスチャン・ディオール', 'イヴ・サンローラン', 'ジャン・ポール・ゴルチエ'],
+        answer: 0,
+        hint: '「モードの帝王」と呼ばれ、コルセット廃止に貢献しました。',
+        exp: 'ポール・ポワレは1906年頃にコルセット不要のハイウエスト・ドレスを発表し、女性の身体解放に大きく貢献しました。'
+      },
+      {
+        id: 21, unit: '衣生活②', type: 'single',
+        q: '20世紀にジャージー素材のスーツやリトル・ブラック・ドレスを発表し、女性の活動的なファッションを確立したデザイナーは誰か。',
+        options: ['ガブリエル（ココ）・シャネル', 'マリー・アントワネット', 'ヴィヴィアン・ウエストウッド', '川久保玲'],
+        answer: 0,
+        hint: 'フランスの有名ブランド「シャネル」の創業者です。',
+        exp: 'ココ・シャネルは動きやすいジャージー素材やパンツスタイルを取り入れ、現代女性服の基礎を築きました。'
+      },
+      {
+        id: 22, unit: '衣生活②', type: 'multi',
+        q: '世界の民族衣装と国・地域の組み合わせとして正しいものをすべて選べ。',
+        options: ['サリー（インド）', 'アオザイ（ベトナム）', 'キルト（スコットランド）', 'チマチョゴリ（トルコ）'],
+        answer: [0, 1, 2],
+        hint: 'チマチョゴリは朝鮮半島（韓国・北朝鮮）の民族衣装です。',
+        exp: 'サリー（インド）、アオザイ（ベトナム）、キルト（スコットランド）は正しい組み合わせです。チマチョゴリ（韓服）は韓国の民族衣装です。'
+      },
+      {
+        id: 23, unit: '衣生活②', type: 'single',
+        q: '江戸時代の庶民の着物において、袖口が小さく機能的な衣服として発展し、現在の着物の原型となったものはどれか。',
+        options: ['小袖（こそで）', '大袖（おおそで）', '十二単', '衣冠束帯'],
+        answer: 0,
+        hint: 'もともとは貴族の下着でしたが、武家・庶民の表着となりました。',
+        exp: '小袖は袖口を小さく縫った着物で、鎌倉〜室町時代に表着化し、江戸時代に現在の和服の形へと完成しました。'
+      },
+      {
+        id: 24, unit: '衣生活②', type: 'input',
+        q: '1960年代にロンドンから世界へ広がり、若者文化の象徴となった丈の短いスカートを何というか。カタカナ7字で答えよ。',
+        accept: ['ミニスカート', 'みにすかーと'],
+        displayAnswer: 'ミニスカート',
+        hint: 'マリー・クワントらが流行させました。',
+        exp: '1960年代にマリー・クワントらが発表したミニスカートは、若者主導のストリートファッションの象徴となりました。'
+      },
+      {
+        id: 25, unit: '衣生活②', type: 'single',
+        q: '日本の明治時代に政府が欧化政策の一環として建設し、上流階級が洋装で舞踏会を開いた施設は何か。',
+        options: ['鹿鳴館（ろくめいかん）', '富岡製糸場', '正倉院', '出島'],
+        answer: 0,
+        hint: '「鹿鳴館時代」という言葉の由来になった建物です。',
+        exp: '1883年に開館した鹿鳴館では、外交官を招いて洋装の舞踏会が開かれ、日本の洋装化の契機となりました。'
+      },
+
+      // --- 衣生活③（12問） ---
+      {
+        id: 26, unit: '衣生活③', type: 'single',
+        q: '和服と洋服の「構成（仕立て方）」の違いとして最も適切な説明はどれか。',
+        options: ['和服は直線裁ちの「平面構成」、洋服は曲線裁ちの「立体構成」である', '和服は曲線裁ちの「立体構成」、洋服は直線裁ちの「平面構成」である', '和服も洋服もすべて平面構成である', '和服は接着剤のみで組み立て、洋服はすべて手縫いである'],
+        answer: 0,
+        hint: '和服は反物をまっすぐ切り、洋服は体に沿わせてカーブをつけて切ります。',
+        exp: '和服は反物（幅約36〜38cm）を直線に裁断して縫い合わせる「平面構成」で、ほどけば元の布に戻せます。洋服は体にフィットさせる「立体構成」です。'
+      },
+      {
+        id: 27, unit: '衣生活③', type: 'multi',
+        q: '日本の「三大刺し子」に含まれるものをすべて選べ。',
+        options: ['こぎん刺し（青森・津軽）', '菱刺し（青森・南部）', '庄内刺し子（山形・庄内）', '加賀友禅（石川・金沢）'],
+        answer: [0, 1, 2],
+        hint: '東北地方の寒冷地で生まれた3つの刺し子です。',
+        exp: '日本三大刺し子は、青森県の「こぎん刺し」「南部菱刺し」、山形県の「庄内刺し子」の3つです。加賀友禅は染色技法です。'
+      },
+      {
+        id: 28, unit: '衣生活③', type: 'single',
+        q: '東北地方で「刺し子」が発達した主な歴史的・地理的理由はどれか。',
+        options: ['寒冷な気候の中で、木綿の入手が難しく麻布の保温性と耐久性を高めるため', '高温多湿な夏に風通しを良くするため', '絹織物の輸出量を増やすため', '染料を使わずにカラフルな服を作るため'],
+        answer: 0,
+        hint: '江戸時代の農民は木綿の着用が制限され、目の粗い麻布を着ていました。',
+        exp: '江戸時代、東北の農民は寒冷地でありながら木綿の着用が制限されていたため、目の粗い麻布に木綿糸を刺して保温性と強度を高めました。'
+      },
+      {
+        id: 29, unit: '衣生活③', type: 'input',
+        q: '和服の材料となる、幅約36〜38cm・長さ約12mの1着分の細長い織物を何というか。漢字2字で答えよ。',
+        accept: ['反物', 'たんもの'],
+        displayAnswer: '反物',
+        hint: '「一反（いったん）」の布という意味です。',
+        exp: '和服は「反物（たんもの）」と呼ばれる一定幅の細長い布を無駄なく直線裁ちして仕立てます。'
+      },
+      {
+        id: 30, unit: '衣生活③', type: 'single',
+        q: '和服の平面構成における大きなメリット（サスティナブルな特徴）はどれか。',
+        options: ['糸をほどけば元の長方形の布に戻り、洗い張りや仕立て直し・リメイクがしやすい', '縫い目が全くないため絶対にほつれない', 'ストレッチ素材なのでどんな体型でも伸縮する', '裁断くずが大量に出るため燃やしやすい'],
+        answer: 0,
+        hint: '四角いパーツをつなぎ合わせているからこそできることです。',
+        exp: '和服は直線裁ちの平面構成であるため、縫い目をほどけば元の反物の形に戻り、洗い張りや子ども用への仕立て直し、おしめや雑巾への再利用まで無駄なく使い切れます。'
+      },
+      {
+        id: 31, unit: '衣生活③', type: 'single',
+        q: '洋服の「立体構成」において、平面の布を体の丸みに沿わせるために布をつまんで縫い合わせる技法を何というか。',
+        options: ['ダーツ', 'タック', 'ギャザー', 'プリーツ'],
+        answer: 0,
+        hint: '胸元やウエスト周辺によく見られる三角形のつまみ縫いです。',
+        exp: 'ダーツ（darts）は布をくさび形につまんで縫い、立体的な丸みを作る技法です。ギャザーは糸を引いて細かく寄せる技法です。'
+      },
+      {
+        id: 32, unit: '衣生活③', type: 'single',
+        q: '和服の着付けで、身長に合わせて着丈を調節するために腰の部分で布を折り上げてたくし込む部分を何というか。',
+        options: ['おはしょり', 'おくみ', 'えり', 'たもと'],
+        answer: 0,
+        hint: '帯の下から少しだけ見える折り返し部分です。',
+        exp: '「おはしょり」を作ることで、身長が異なる人でも同じ反物から仕立てた着物を自分の丈に合わせて着ることができます。'
+      },
+      {
+        id: 33, unit: '衣生活③', type: 'single',
+        q: '衣服の「ゆとり量」の役割として最も適切なものはどれか。',
+        options: ['動作のしやすさ（運動機能性）の確保と、衣服内気候の換気（通気性）を助ける', '衣服の重さを重くして安定させる', '洗濯時の色落ちを防ぐ', '静電気を発生しやすくする'],
+        answer: 0,
+        hint: 'ピチピチすぎると動きにくく、空気も通りません。',
+        exp: '衣服のゆとりは、皮膚の伸び縮みに対応して動きやすくするとともに、空気の層を作って保温や換気を助ける重要な設計要素です。'
+      },
+      {
+        id: 34, unit: '衣生活③', type: 'single',
+        q: 'ユニバーサルデザイン（UD）の考え方を取り入れた衣服の工夫として適切なものはどれか。',
+        options: ['面ファスナー（マジックテープ）や大きなボタン、前開き仕様にして誰でも着脱しやすくする', '特定の年齢層しか着られない複雑な留め具にする', '裏表が全く区別できないデザインにする', '重くて硬い素材だけを使用する'],
+        answer: 0,
+        hint: '高齢者や障がいのある人、子どもなどすべての人に使いやすい工夫です。',
+        exp: '指先の力が弱い人でも留めやすい面ファスナーやマグネットボタン、車椅子でも座りやすい丈の工夫などがUD衣服の例です。'
+      },
+      {
+        id: 35, unit: '衣生活③', type: 'input',
+        q: '青森県の津軽地方に伝わる三大刺し子の一つで、麻布の織り目を埋めるように木綿糸で幾何学模様を刺す技法を「〇〇〇刺し」というか。ひらがな3字で答えよ。',
+        accept: ['こぎん', 'こぎん刺し', 'こぎんざし'],
+        displayAnswer: 'こぎん（こぎん刺し）',
+        hint: '「小巾（こぎん）」が語源とされています。',
+        exp: '津軽の「こぎん刺し」は奇数目の織り目を拾って菱形などの美しい幾何学模様を刺す伝統工芸です。'
+      },
+      {
+        id: 36, unit: '衣生活③', type: 'single',
+        q: '青森県の南部地方に伝わる三大刺し子の一つで、横長の菱形模様を特徴とする技法はどれか。',
+        options: ['南部菱刺し（ひしざし）', '庄内刺し子', '加賀指ぬき', '西陣織'],
+        answer: 0,
+        hint: '「菱形」が名前の由来です。',
+        exp: '南部菱刺しは偶数目の織り目を拾うため、横長の菱形模様になるのが特徴です。'
+      },
+      {
+        id: 37, unit: '衣生活③', type: 'single',
+        q: '型紙（パターン）を布に置いて裁断する際、布の伸び方向や強度を揃えるために合わせる基準線を何というか。',
+        options: ['布目線（地の目線）', 'ウエストライン', 'ヘムライン', 'センターバック'],
+        answer: 0,
+        hint: '縦糸（たていと）の方向に合わせるのが基本です。',
+        exp: '織物は縦糸方向が伸びにくく丈夫なため、型紙の「布目線（地の目線）」を布の縦糸方向に平行に合わせて裁断します。'
+      },
+
+      // --- 衣生活④（13問） ---
+      {
+        id: 38, unit: '衣生活④', type: 'single',
+        q: '天然繊維のうち、主成分が「セルロース（植物繊維）」であるものの組み合わせはどれか。',
+        options: ['綿（コットン）と麻（リネン）', '羊毛（ウール）と絹（シルク）', 'ポリエステルとナイロン', 'レーヨンとアクリル'],
+        answer: 0,
+        hint: '植物から採れる2つの天然繊維です。',
+        exp: '綿と麻は植物由来の天然繊維で主成分はセルロースです。羊毛と絹は動物由来のタンパク質繊維です。'
+      },
+      {
+        id: 39, unit: '衣生活④', type: 'single',
+        q: '天然繊維のうち、主成分が「タンパク質（動物繊維）」であるものの組み合わせはどれか。',
+        options: ['羊毛（ウール）と絹（シルク）', '綿（コットン）と麻（ラミー）', 'キュプラとアセテート', 'ポリウレタンとポリエステル'],
+        answer: 0,
+        hint: '羊の毛と蚕（かいこ）の繭から作られる繊維です。',
+        exp: '羊毛（ケラチン）と絹（フィブロイン・セリシン）は動物由来のタンパク質繊維です。保温性や光沢に優れますが、虫害やアルカリに注意が必要です。'
+      },
+      {
+        id: 40, unit: '衣生活④', type: 'single',
+        q: '2種類以上の異なる繊維を混ぜて糸に紡ぎ、それぞれの長所を生かし短所を補う加工法を何というか。',
+        options: ['混紡（こんぼう）', '混織（こんしょく）', '染色（せんしょく）', '縮絨（しゅくじゅう）'],
+        answer: 0,
+        hint: '例：綿とポリエステルを混ぜて、吸湿性と速乾性・防シワ性を両立させます。',
+        exp: '混紡（こんぼう）はわた（短繊維）の段階で異なる繊維を混ぜて紡績する方法です。例えば綿＋ポリエステルはワイシャツなどに広く使われます。'
+      },
+      {
+        id: 41, unit: '衣生活④', type: 'single',
+        q: '世界の繊維生産量で最も割合が大きく、速乾性・強さ・シワになりにくさに優れた合成繊維はどれか。',
+        options: ['ポリエステル', 'ナイロン', 'アクリル', 'キュプラ'],
+        answer: 0,
+        hint: 'ペットボトルと同じ原料（PET）からも作られる合成繊維です。',
+        exp: 'ポリエステルは世界最大の生産量を誇る合成繊維で、熱可塑性がありプリーツ加工や速乾性・防シワ性に優れます。'
+      },
+      {
+        id: 42, unit: '衣生活④', type: 'single',
+        q: '羊毛（ウール）の繊維表面にあるウロコ状の組織を何というか。',
+        options: ['スケール', 'ルーメン', 'フィブリル', 'セリシン'],
+        answer: 0,
+        hint: 'これが絡み合うことで「フェルト化（縮絨）」が起こります。',
+        exp: '羊毛表面のウロコ状組織は「スケール」と呼ばれ、水・熱・摩擦が加わるとスケール同士が絡み合って縮む「フェルト化（縮絨）」を起こします。'
+      },
+      {
+        id: 43, unit: '衣生活④', type: 'multi',
+        q: '織物の「三原組織（さんげんそしき）」に含まれるものをすべて選べ。',
+        options: ['平織（ひらおり）', '綾織（あやおり・斜文織）', '朱子織（しゅすおり）', 'メリヤス編（天竺編）'],
+        answer: [0, 1, 2],
+        hint: '「〇〇織」という3つの基本組織です。編み物は含まれません。',
+        exp: '織物の三原組織は「平織」「綾織（斜文織）」「朱子織」の3つです。メリヤス編は編物（ニット）の組織です。'
+      },
+      {
+        id: 44, unit: '衣生活④', type: 'single',
+        q: '三原組織のうち、縦糸と横糸が1本おきに交互に交差し、最も丈夫で摩擦に強い組織（ブロードやキャンバスなど）はどれか。',
+        options: ['平織（ひらおり）', '綾織（あやおり）', '朱子織（しゅすおり）', 'レース編'],
+        answer: 0,
+        hint: '交差点（組織点）が最も多いシンプルな織り方です。',
+        exp: '平織は縦糸と横糸が1本ずつ交互に浮き沈みする最も基本的な組織で、丈夫で摩擦に強い特徴があります。'
+      },
+      {
+        id: 45, unit: '衣生活④', type: 'single',
+        q: '三原組織のうち、織り目が斜めの線（綾目）になり、柔軟でシワになりにくくデニムやギャバジンなどに使われる組織はどれか。',
+        options: ['綾織（あやおり・斜文織）', '平織（ひらおり）', '朱子織（しゅすおり）', '不織布'],
+        answer: 0,
+        hint: 'ジーンズ（デニム）の斜めの線を思い出しましょう。',
+        exp: '綾織（斜文織）は糸の交差点が斜めに連なる組織で、平織より柔軟性・光沢がありシワになりにくい特徴があります。'
+      },
+      {
+        id: 46, unit: '衣生活④', type: 'single',
+        q: '三原組織のうち、縦糸または横糸の浮きが長く、表面が滑らかで光沢に富むが摩擦に弱い組織（サテンなど）はどれか。',
+        options: ['朱子織（しゅすおり）', '平織（ひらおり）', '綾織（あやおり）', '平編'],
+        answer: 0,
+        hint: 'ドレスや裏地に使われる光沢のある「サテン」の織り方です。',
+        exp: '朱子織は組織点が少なく糸が長く表面に浮いているため、美しい光沢と滑らかさがありますが、引っかかりや摩擦には弱い特徴があります。'
+      },
+      {
+        id: 47, unit: '衣生活④', type: 'input',
+        q: '木材パルプやコットンリンターなどの天然原料を薬品で溶かして再び繊維にした化学繊維（レーヨンやキュプラなど）の分類名を「〇〇繊維」というか。漢字2字で答えよ。',
+        accept: ['再生', '再生繊維', 'さいせい', 'さいせいせんい'],
+        displayAnswer: '再生（再生繊維）',
+        hint: '天然のセルロースを「再び生かす」繊維です。',
+        exp: 'レーヨンやキュプラは天然セルロースを溶かして紡糸した「再生繊維」です。吸湿性が高く静電気が起きにくいですが、水に濡れると強度が落ちます。'
+      },
+      {
+        id: 48, unit: '衣生活④', type: 'single',
+        q: '麻（リネン・ラミー）の繊維の性質として正しいものはどれか。',
+        options: ['熱伝導率が大きく放熱性に優れるため、夏物衣料に適している', '保温性が極めて高く、冬用の厚手コートに最適である', '弾力性が非常に高く、全くシワにならない', '水を全く吸わない'],
+        answer: 0,
+        hint: '触るとひんやり感（接触冷感）があり、涼しい素材です。',
+        exp: '麻は熱伝導率が大きく、吸湿・放湿性も高いため涼しく、夏物衣料に適しています。ただし弾力性が小さくシワになりやすい欠点があります。'
+      },
+      {
+        id: 49, unit: '衣生活④', type: 'single',
+        q: '1本の糸でループ（編み目）を作りながら絡み合わせて作る布で、伸縮性・通気性に優れTシャツやセーターに使われる布地構造はどれか。',
+        options: ['編物（ニット）', '織物（ウーブン）', '不織布（ふしょくふ）', 'フェルト'],
+        answer: 0,
+        hint: 'ループ構造により縦横によく伸びます。',
+        exp: '編物（ニット）は糸をループ状にして連ねるため、伸縮性・柔軟性・通気性に富み、肌着やTシャツ・セーターに広く用いられます。'
+      },
+      {
+        id: 50, unit: '衣生活④', type: 'single',
+        q: '繊維を織ったり編んだりせず、熱や接着剤・絡み合いによってシート状にした布で、マスクや紙おむつなどに使われるものはどれか。',
+        options: ['不織布（ふしょくふ）', '朱子織', '平織', 'カシミヤ'],
+        answer: 0,
+        hint: '「織らない布」と書きます。',
+        exp: '不織布は繊維を一定の方向に並べたりランダムに絡ませたりして結合させたシート状の布で、フィルター性や加工性に優れます。'
+      },
+
+      // --- 衣生活⑤（13問） ---
+      {
+        id: 51, unit: '衣生活⑤', type: 'single',
+        q: '衣服につく「汚れの3分類」のうち、皮脂や口紅、機械油などの汚れは何に分類されるか。',
+        options: ['油溶性汚れ', '水溶性汚れ', '不溶性汚れ', '気体性汚れ'],
+        answer: 0,
+        hint: '水だけでは落ちず、洗剤（界面活性剤）やドライクリーニングで落とす汚れです。',
+        exp: '皮脂・油・口紅などは「油溶性汚れ」に分類されます。汗や果汁は「水溶性汚れ」、泥やほこりは「不溶性汚れ」です。'
+      },
+      {
+        id: 52, unit: '衣生活⑤', type: 'input',
+        q: '洗剤の主成分であり、分子の中に水になじみやすい「親水基」と油になじみやすい「親油基（疎水基）」の両方をもつ物質を何というか。漢字5字で答えよ。',
+        accept: ['界面活性剤', 'かいめんかっせいざい'],
+        displayAnswer: '界面活性剤',
+        hint: '水と油の境目（界面）に働きかける物質です。',
+        exp: '界面活性剤は親油基が油汚れを取り囲み、親水基が水と結びつくことで、油汚れを衣類から引き離して水中に分散させます。'
+      },
+      {
+        id: 53, unit: '衣生活⑤', type: 'single',
+        q: 'JIS（日本産業規格）の「取り扱い絵表示」における5つの基本記号の組み合わせとして正しいものはどれか。',
+        options: ['家庭洗濯（桶）・漂白（三角）・乾燥（四角）・アイロン・クリーニング（円）', '家庭洗濯（桶）・脱水（渦巻）・乾燥（太陽）・アイロン・保管（ハンガー）', '手洗い（手）・漂白（丸）・乾燥（三角）・アイロン・防水（傘）', '水洗い（波）・ドライ（四角）・アイロン・染色（瓶）・防虫（虫）'],
+        answer: 0,
+        hint: '桶・三角・四角・アイロン・円の5種類です。',
+        exp: '現在のJIS取り扱い絵表示（ISO準拠）は、①家庭洗濯（桶）、②漂白（三角）、③乾燥（四角）、④アイロン、⑤クリーニング（円）の5つの基本記号で構成されます。'
+      },
+      {
+        id: 54, unit: '衣生活⑤', type: 'single',
+        q: '取り扱い絵表示の「洗濯桶」の記号の下に「横線が2本」引かれている場合、どのような意味を表すか。',
+        options: ['洗濯機で「非常に弱い」洗濯ができる', '洗濯機で「非常に強い」洗濯ができる', '2回すすぎを行う', '水温20℃以下で洗う'],
+        answer: 0,
+        hint: '下線の本数が増えるほど「やさしく（弱く）洗う」という意味になります。',
+        exp: '桶の下の横線は機械力の強さを表し、線なし＝標準、1本＝弱い洗濯、2本＝非常に弱い洗濯を意味します。'
+      },
+      {
+        id: 55, unit: '衣生活⑤', type: 'single',
+        q: '取り扱い絵表示の「四角形（乾燥）」の中に「丸（○）」が描かれ、さらに丸の中に「点が2つ」ある場合の意味はどれか。',
+        options: ['タンブル乾燥ができる（排気温度上限80℃の通常の乾燥）', 'タンブル乾燥禁止', '日陰で平干しする', 'アイロンを中温でかける'],
+        answer: 0,
+        hint: '四角の中に丸はコインランドリー等の回転式乾燥機（タンブル乾燥）を表します。',
+        exp: '四角に丸はタンブル乾燥可を示し、点2つは通常の乾燥（上限80℃）、点1つは低い温度での乾燥（上限60℃）を意味します。'
+      },
+      {
+        id: 56, unit: '衣生活⑤', type: 'single',
+        q: '取り扱い絵表示の「三角形（漂白）」に「斜線が2本」入っている記号の意味はどれか。',
+        options: ['酸素系漂白剤のみ使用できる（塩素系漂白剤は使用禁止）', '塩素系・酸素系どちらの漂白剤も使用できる', 'すべての漂白剤が使用禁止', '日光漂白のみできる'],
+        answer: 0,
+        hint: '色柄物にも使いやすい「酸素系」だけがOKのマークです。',
+        exp: '白無地の三角は塩素系・酸素系ともに可、斜線2本の三角は「酸素系漂白剤のみ可」、×印は漂白禁止です。'
+      },
+      {
+        id: 57, unit: '衣生活⑤', type: 'single',
+        q: '取り扱い絵表示の「アイロン」記号の中に「点が2つ（・・）」ある場合、アイロン底面の温度上限は何℃か。',
+        options: ['150℃', '200℃', '110℃', '80℃'],
+        answer: 0,
+        hint: '点3つが200℃、点1つが110℃です。その真ん中の温度です。',
+        exp: 'アイロン記号の点の数は上限温度を示し、点3つ＝200℃、点2つ＝150℃、点1つ＝110℃（スチームなし）です。'
+      },
+      {
+        id: 58, unit: '衣生活⑤', type: 'single',
+        q: '取り扱い絵表示の「円（○）」の中に「W」と書かれている記号の意味はどれか。',
+        options: ['ウエットクリーニング（プロによる特殊な水洗い）ができる', 'ドライクリーニングができる', '家庭用洗濯機で洗える', '水洗い禁止'],
+        answer: 0,
+        hint: 'Wet（ウエット）の頭文字「W」です。',
+        exp: '円の中に「W」はクリーニング店でのウエットクリーニング可を意味します。なお「P」や「F」はドライクリーニング（有機溶剤）の記号です。'
+      },
+      {
+        id: 59, unit: '衣生活⑤', type: 'multi',
+        q: '季節の変わり目に衣類を長期保管（衣替え）する際の正しい方法として適切なものをすべて選べ。',
+        options: ['保管前に必ず洗濯やクリーニングをして汚れを落としておく', '防虫剤はガスが空気より重いため、衣類の一番上に置く', '異なる種類の防虫剤を混ぜずに1種類だけ使う', '湿気を閉じ込めるため濡れたままビニール袋に密閉する'],
+        answer: [0, 1, 2],
+        hint: '汚れは虫食いや黄ばみの原因になり、防虫剤のガスは上から下へ流れます。',
+        exp: '食べこぼしや皮脂汚れが残っていると虫食いやカビの原因になります。また防虫剤の成分は空気より重いため衣類の上に置き、化学反応による変質を防ぐため1種類のみ使用します。'
+      },
+      {
+        id: 60, unit: '衣生活⑤', type: 'single',
+        q: '羊毛（ウール）や絹（シルク）などの動物繊維を家庭で洗濯する際、最も適した洗剤はどれか。',
+        options: ['おしゃれ着用中性洗剤', '弱アルカリ性粉末洗剤', '塩素系漂白剤', 'クレンザー'],
+        answer: 0,
+        hint: 'タンパク質繊維はアルカリ性に弱いため、刺激の少ない洗剤を使います。',
+        exp: '羊毛や絹はタンパク質繊維であり、アルカリ性に弱く縮みや風合い劣化を起こしやすいため、中性洗剤（おしゃれ着用洗剤）でやさしく洗います。'
+      },
+      {
+        id: 61, unit: '衣生活⑤', type: 'single',
+        q: '泥やほこりなどの「不溶性汚れ」を落とすのに最も効果的な方法はどれか。',
+        options: ['乾かしてブラシではたき落とした後、もみ洗いなどの物理的な力を加えて洗う', 'お湯に浸けて静かに放置するだけにする', '塩素系漂白剤に長時間浸ける', 'アイロンで高温加熱する'],
+        answer: 0,
+        hint: '水にも油にも溶けない固体の粒なので、物理的にかき出す必要があります。',
+        exp: '不溶性汚れは繊維の隙間に入り込んでいるため、まず乾いた状態で払い落とし、石けん等をつけてもみ洗い（物理的力）するのが効果的です。'
+      },
+      {
+        id: 62, unit: '衣生活⑤', type: 'single',
+        q: '血液のシミを落とす際の注意点として正しいものはどれか。',
+        options: ['お湯ではなく「水（またはぬるま湯以下の冷水）」で洗う', '60℃以上の熱いお湯で煮洗いする', '乾くまで1週間放置してから洗う', '油を塗ってからアイロンをかける'],
+        answer: 0,
+        hint: '血液に含まれるタンパク質は熱を加えると固まって落ちなくなります。',
+        exp: '血液中のタンパク質は熱湯をかけると熱変性して凝固し、繊維に固着して落ちなくなるため、必ず水で洗います。'
+      },
+      {
+        id: 63, unit: '衣生活⑤', type: 'input',
+        q: '家庭用品品質表示法に基づき、衣類の繊維の組成や取り扱い方法、表示者名などを記載して衣類に縫い付けられているラベルを「〇〇表示タグ（またはケアラベル）」というか。漢字2字を答えよ。',
+        accept: ['品質', '品質表示', 'ひんしつ', 'ひんしつひょうじ'],
+        displayAnswer: '品質（品質表示）',
+        hint: '消費者が正しく選択・手入れできるよう義務付けられた表示です。',
+        exp: '家庭用品品質表示法により、繊維製品には「繊維の組成」「家庭洗濯等取扱方法」「表示者名等」の品質表示が義務付けられています。'
+      },
+
+      // --- 衣生活⑥（12問） ---
+      {
+        id: 64, unit: '衣生活⑥', type: 'single',
+        q: '最新の流行を取り入れた衣料品を低価格で短期間に大量生産・大量販売するビジネスモデルを何というか。',
+        options: ['ファストファッション', 'オートクチュール', 'スローファッション', 'プレタポルテ'],
+        answer: 0,
+        hint: '「ファストフード」になぞらえて呼ばれる言葉です。',
+        exp: 'ファストファッションは企画から店頭販売までのサイクルが極めて短く、低価格で流行の服を提供しますが、大量廃棄などの環境問題も指摘されています。'
+      },
+      {
+        id: 65, unit: '衣生活⑥', type: 'multi',
+        q: 'ファストファッションの大量生産・大量消費・大量廃棄が引き起こす環境・社会問題として適切なものをすべて選べ。',
+        options: ['綿花栽培や染色工程での大量の水消費と水質汚染', '未着用・廃棄衣料の焼却・埋立によるCO2排出増加', 'ポリエステルなどの洗濯時に発生するマイクロプラスチックの海洋流出', '世界中で衣服が全く作られなくなる問題'],
+        answer: [0, 1, 2],
+        hint: '水資源・温室効果ガス・海洋プラスチック・労働環境など多くの課題があります。',
+        exp: 'ファッション産業は世界有数の環境負荷産業とされ、大量の水使用、CO2排出、合成繊維由来のマイクロプラスチック流出、途上国の低賃金労働などが問題視されています。'
+      },
+      {
+        id: 66, unit: '衣生活⑥', type: 'single',
+        q: 'ポリエステルやナイロンなどの合成繊維の衣類を洗濯した際に抜け落ち、排水を通じて海洋汚染の原因となる5mm以下の微細なプラスチック片を何というか。',
+        options: ['マイクロプラスチック', 'ナノセルロース', 'バイオマス', 'オーガニックコットン'],
+        answer: 0,
+        hint: '非常に小さなプラスチックという意味のカタカナ語です。',
+        exp: '合成繊維の洗濯で発生するマイクロファイバー（マイクロプラスチックの一種）は下水処理場をすり抜けて海洋へ流出し、生態系への影響が懸念されています。'
+      },
+      {
+        id: 67, unit: '衣生活⑥', type: 'single',
+        q: '循環型社会を目指す「3R」に、衣生活の観点から「修繕・補修して長く着る」という意味のRを加えた「3R＋R」の4つ目のRは何か。',
+        options: ['リペア（Repair）', 'リセット（Reset）', 'リリース（Release）', 'リターン（Return）'],
+        answer: 0,
+        hint: 'ボタン付けや破れの繕いなど「修理・修繕」を表す英単語です。',
+        exp: 'リデュース（発生抑制）・リユース（再使用）・リサイクル（再生利用）に加え、衣生活では「リペア（修繕）」して長く愛用することが重要です。'
+      },
+      {
+        id: 68, unit: '衣生活⑥', type: 'input',
+        q: '地球環境や生態系、生産者の労働環境や人権に配慮して作られ、持続可能な社会の実現を目指すファッションを「〇〇〇〇〇〇ファッション」というか。カタカナ6字で答えよ。',
+        accept: ['サスティナブル', 'サステナブル', 'さすてぃなぶる', 'さすてなぶる'],
+        displayAnswer: 'サスティナブル（サステナブル）',
+        hint: 'SDGsのS（Sustainable＝持続可能な）と同じ言葉です。',
+        exp: 'サスティナブル（サステナブル）ファッションは、衣服の生産から着用、廃棄に至るプロセスが将来にわたり持続可能であることを目指す取り組みです。'
+      },
+      {
+        id: 69, unit: '衣生活⑥', type: 'single',
+        q: '開発途上国の原料や製品を適正な価格で継続的に購入することにより、立場の弱い生産者や労働者の生活改善と自立を目指す貿易の仕組みを何というか。',
+        options: ['フェアトレード', 'ダンピング', 'ファストトレード', 'ブロック経済'],
+        answer: 0,
+        hint: '「公正な貿易」という意味の言葉です。',
+        exp: 'フェアトレード（公正貿易）は、綿花栽培農家や縫製工場の労働者に適正な賃金と安全な労働環境を保証する仕組みで、エシカル消費の一つです。'
+      },
+      {
+        id: 70, unit: '衣生活⑥', type: 'single',
+        q: '農薬や化学肥料を原則として3年以上使わない農地で、環境や農家の健康に配慮して栽培された綿花を何というか。',
+        options: ['オーガニックコットン', 'セルロースファイバー', '合成コットン', 'アクリルコットン'],
+        answer: 0,
+        hint: '有機栽培の綿花という意味です。',
+        exp: 'オーガニックコットンは有機農法で栽培された綿花で、土壌や水質の汚染を防ぎ、生産者の健康被害を減らす効果があります。'
+      },
+      {
+        id: 71, unit: '衣生活⑥', type: 'single',
+        q: '不要になった衣類や廃棄物にデザインやアイデアを加えて、元の製品よりも価値の高い新しい製品へと生まれ変わらせることを何というか。',
+        options: ['アップサイクル', 'ダウンサイクル', '大量廃棄', 'リニアエコノミー'],
+        answer: 0,
+        hint: '単なるリサイクル（原料に戻す）よりも価値を「アップ」させる手法です。',
+        exp: 'アップサイクルは古着のデニムをデザイン性の高いバッグにリメイクするなど、元の素材を生かしつつ付加価値を高めて再生する手法です。'
+      },
+      {
+        id: 72, unit: '衣生活⑥', type: 'single',
+        q: '繊維製品が有害物質を含まず安全であることや、環境・労働環境に配慮して生産されたことを証明する国際的な認証ラベルの例はどれか。',
+        options: ['エコテックス（OEKO-TEX）やGOTS認証', 'JASマーク（食品用）', 'PSEマーク（電気用品用）', 'SGマーク（玩具・生活用品安全）'],
+        answer: 0,
+        hint: '繊維の安全・環境基準に関する国際認証です。',
+        exp: 'エコテックス（OEKO-TEX）やオーガニックテキスタイル世界基準（GOTS）は、繊維製品の安全性やサスティナビリティを示す国際認証です。'
+      },
+      {
+        id: 73, unit: '衣生活⑥', type: 'single',
+        q: '衣服を購入する際、自分の手持ちの服と着回しができるかや長く使える品質かを考え、計画的に購入する消費者行動はどれか。',
+        options: ['エシカル消費（倫理的消費）・計画的購買', '衝動買い', '使い捨て消費', 'パニック買い'],
+        answer: 0,
+        hint: '人・社会・環境に配慮した思いやりのある消費行動です。',
+        exp: 'エシカル消費は、環境や社会に配慮した商品を選んだり、本当に必要なものだけを購入して長く使ったりする持続可能な消費行動です。'
+      },
+      {
+        id: 74, unit: '衣生活⑥', type: 'multi',
+        q: '私たち消費者が日常生活で実践できるサスティナブルな衣生活のアクションをすべて選べ。',
+        options: ['古着屋やフリマアプリ、衣料品回収ボックスを活用する', 'ボタンが取れたりほつれたりした服は修繕（リペア）して着続ける', '洗濯ネットを使用したり洗濯回数を工夫してマイクロプラスチック流出を減らす', '1回着た服は洗濯せずに毎回すべてゴミ箱に捨てる'],
+        answer: [0, 1, 2],
+        hint: '長く着る・循環させる・環境負荷を減らす行動を選びましょう。',
+        exp: 'リペア、リユース（古着活用）、リサイクル（店頭回収）、洗濯時の工夫はすべて私たちにできる重要なサスティナブルアクションです。'
+      },
+      {
+        id: 75, unit: '衣生活⑥', type: 'input',
+        q: 'ファストファッションの対義語として提唱され、良質な衣服を適切な価格で購入し、手入れしながら長く大切に着続けるライフスタイルを「〇〇〇ファッション」というか。カタカナ3字で答えよ。',
+        accept: ['スロー', 'スローファッション', 'すろー', 'すろーふぁっしょん'],
+        displayAnswer: 'スロー（スローファッション）',
+        hint: '「ファスト（速い）」の反対の言葉です。',
+        exp: 'スローファッションは、環境や生産者に配慮した高品質な服を選び、修繕しながら長く愛用する持続可能なファッションのあり方です。'
+      }
+    ];
+
+    // =========================================================================
+    // 4. 暗記カード＆用語辞典データ
+    // =========================================================================
+    const FLASHCARDS = [
+      { unit: '衣生活①', front: 'パジャマ vs スウェットの寝つき時間', back: 'パジャマ：0時間38分\nスウェット：0時間47分\n（パジャマの方が約9分早く入眠できる）' },
+      { unit: '衣生活①', front: '一晩の睡眠中の発汗量と理想的な寝床内気候', back: '発汗量：約200〜500ml\n寝床内気候：温度 32〜34℃ ／ 湿度 45〜55%' },
+      { unit: '衣生活①', front: '衣服の起源 6つの説', back: '①身体保護説 ②装飾説 ③羞恥説\n④呪術説 ⑤象徴説 ⑥異性吸引説' },
+      { unit: '衣生活①', front: '衣服の2大機能', back: '①保健衛生的機能（体温調節・清潔保持・保護）\n②社会的機能（TPO・礼儀・所属・個性表現）' },
+      { unit: '衣生活②', front: '衣服の3大形状分類', back: '①懸衣（布を巻く：サリー・キトン）\n②貫頭衣（頭を通す：弥生時代の衣・ポンチョ）\n③体形衣（裁断・縫製：洋服・和服）' },
+      { unit: '衣生活②', front: '和服の襟の合わせ方の鉄則', back: '必ず「右前」（自分から見て右の襟を先に体に当て、左の襟を上に重ねる）。左前は死装束。' },
+      { unit: '衣生活②', front: 'ポール・ポワレとココ・シャネルの功績', back: 'ポワレ：コルセットからの女性解放\nシャネル：ジャージー素材等で活動的な女性服を確立' },
+      { unit: '衣生活③', front: '和服と洋服の構成の違い', back: '和服：直線裁ちの「平面構成」（反物から仕立て、ほどけば元の布に戻る）\n洋服：曲線裁ちの「立体構成」（ダーツ等で丸みを出す）' },
+      { unit: '衣生活③', front: '日本三大刺し子', back: '①こぎん刺し（青森・津軽）\n②南部菱刺し（青森・南部）\n③庄内刺し子（山形・庄内）' },
+      { unit: '衣生活④', front: '天然繊維の2分類と代表例', back: '植物繊維（セルロース）：綿・麻\n動物繊維（タンパク質）：羊毛・絹' },
+      { unit: '衣生活④', front: '混紡（こんぼう）とは？', back: '2種類以上の異なる繊維をわたの段階で混ぜて糸に紡ぎ、互いの長所を生かし短所を補う加工法（例：綿＋ポリエステル）。' },
+      { unit: '衣生活④', front: '織物の三原組織', back: '①平織（最も丈夫・ブロード）\n②綾織（斜めの綾目・デニム）\n③朱子織（光沢大・サテン）' },
+      { unit: '衣生活④', front: '羊毛の「スケール」と「フェルト化（縮絨）」', back: '羊毛表面のウロコ状組織がスケール。水・熱・摩擦でスケールが絡み合い縮む現象がフェルト化。' },
+      { unit: '衣生活⑤', front: '汚れの3分類', back: '①水溶性汚れ（汗・果汁）\n②油溶性汚れ（皮脂・口紅）\n③不溶性汚れ（泥・すす・ほこり）' },
+      { unit: '衣生活⑤', front: '界面活性剤の働き', back: '親油基が油汚れをつかみ、親水基が水と結びつくことで、油汚れを衣類から引き離して水中に分散させる。' },
+      { unit: '衣生活⑤', front: 'JIS取り扱い絵表示の5つの基本記号', back: '①家庭洗濯（桶） ②漂白（三角） ③乾燥（四角）\n④アイロン ⑤クリーニング（円）' },
+      { unit: '衣生活⑤', front: '長期保管（衣替え）の3つの鉄則', back: '①洗濯して汚れを完全に落とす\n②防虫剤は衣類の一番上に置く（ガスは空気より重い）\n③防虫剤は1種類のみ使う' },
+      { unit: '衣生活⑥', front: 'マイクロプラスチック問題（衣生活との関わり）', back: 'ポリエステル等の合成繊維を洗濯する際に出る微細な繊維くずが海洋へ流出し、生態系に悪影響を与える問題。' },
+      { unit: '衣生活⑥', front: '衣生活における「3R＋R」', back: 'リデュース・リユース・リサイクル ＋ リペア（修繕して長く着る）' },
+      { unit: '衣生活⑥', front: 'サスティナブル＆エシカルファッション', back: '環境負荷の低減（オーガニックコットン等）や生産者の人権・適正賃金（フェアトレード）に配慮した持続可能な衣生活。' }
+    ];
+
+    const DICTIONARY = [
+      { term: '寝床内気候', unit: '衣生活①', desc: 'ふとんと体の間の空間の温度と湿度。温度32〜34℃、湿度45〜55%が理想とされる。' },
+      { term: '入眠潜時（寝つき時間）', unit: '衣生活①', desc: '床に入ってから実際に眠りにつくまでの時間。パジャマは0時間38分、スウェットは0時間47分。' },
+      { term: '身体保護説・装飾説', unit: '衣生活①', desc: '衣服の起源6説の代表。自然環境から身を守る「身体保護説」と、美や目立ちたい欲求から生まれたとする「装飾説」。' },
+      { term: 'TPO', unit: '衣生活①', desc: 'Time（時）・Place（場所）・Occasion（場合）の頭文字。社会的機能における服装選択の基準。' },
+      { term: '懸衣・貫頭衣・体形衣', unit: '衣生活②', desc: '衣服の3大形状分類。布を巻く「懸衣」、穴に頭を通す「貫頭衣」、体に合わせ裁断縫製する「体形衣」。' },
+      { term: '小袖（こそで）', unit: '衣生活②', desc: '袖口を小さく仕立てた着物。江戸時代に庶民の普段着として普及し、現代の着物の原型となった。' },
+      { term: '平面構成と立体構成', unit: '衣生活③', desc: '直線裁ちで反物を無駄なく使う和服の「平面構成」と、曲線裁ちやダーツで体に沿わせる洋服の「立体構成」。' },
+      { term: '日本三大刺し子', unit: '衣生活③', desc: '青森県の「こぎん刺し」「南部菱刺し」、山形県の「庄内刺し子」。寒冷地で麻布の保温・補強のために発達した。' },
+      { term: 'ダーツ', unit: '衣生活③', desc: '立体構成において、平面の布をくさび形につまんで縫い、胸や腰などの丸みに沿わせる技法。' },
+      { term: 'セルロース繊維', unit: '衣生活④', desc: '綿や麻などの植物繊維の主成分。吸水性・耐熱性に優れる。' },
+      { term: 'タンパク質繊維', unit: '衣生活④', desc: '羊毛や絹などの動物繊維の主成分。保温性・光沢に優れるが、アルカリや害虫に弱い。' },
+      { term: '混紡（こんぼう）', unit: '衣生活④', desc: '2種類以上の異なる繊維を混ぜて紡績し、互いの長所を生かす加工法。' },
+      { term: '三原組織', unit: '衣生活④', desc: '織物の基本である「平織」「綾織（斜文織）」「朱子織」の3つの織り方。' },
+      { term: 'スケールとフェルト化', unit: '衣生活④', desc: '羊毛表面のウロコ状組織（スケール）が水・熱・摩擦で絡み合い、縮んで硬くなる現象（縮絨）。' },
+      { term: '界面活性剤', unit: '衣生活⑤', desc: '親水基と親油基をもち、水と油を混ぜ合わせて衣類の油汚れを落とす洗剤の主成分。' },
+      { term: 'JIS取り扱い絵表示', unit: '衣生活⑤', desc: '家庭洗濯（桶）・漂白（三角）・乾燥（四角）・アイロン・クリーニング（円）の5基本記号からなる表示。' },
+      { term: 'ウエットクリーニング', unit: '衣生活⑤', desc: '円の中に「W」で表される、クリーニング店による特殊な技術を用いたプロの水洗い。' },
+      { term: 'ファストファッション', unit: '衣生活⑥', desc: '最新トレンドを低価格・短サイクルで大量生産・大量販売するビジネスモデル。大量廃棄問題が課題。' },
+      { term: 'マイクロプラスチック', unit: '衣生活⑥', desc: '合成繊維の洗濯などで発生する5mm以下の微細なプラスチック片。海洋生態系への悪影響が問題視される。' },
+      { term: 'フェアトレード', unit: '衣生活⑥', desc: '途上国の原料や製品を適正価格で継続購入し、生産者の生活改善と自立を支える公正貿易。' },
+      { term: 'アップサイクル', unit: '衣生活⑥', desc: '廃棄物や古着にデザイン等の工夫を加え、元の製品よりも付加価値の高い製品に再生すること。' }
+    ];
+
+    // =========================================================================
+    // 5. おまもりガチャ＆アイテムデータ
+    // =========================================================================
+    const CHARMS = [
+      { id: 'c_none', name: 'なし', rarity: 'N', bonus: 'ボーナスなし', expMult: 1.0, dmgMult: 1.0 },
+      { id: 'c_needle', name: '黄金の針おまもり', rarity: 'R', bonus: '攻撃力 +15%', expMult: 1.0, dmgMult: 1.15 },
+      { id: 'c_pajama', name: '快眠パジャマ守り', rarity: 'R', bonus: '獲得EXP +20%', expMult: 1.2, dmgMult: 1.0 },
+      { id: 'c_kogin', name: '津軽こぎん刺し守り', rarity: 'SR', bonus: '攻撃力 +25% / EXP +20%', expMult: 1.2, dmgMult: 1.25 },
+      { id: 'c_silk', name: '天女の羽衣シルク守り', rarity: 'SR', bonus: '獲得EXP +40%', expMult: 1.4, dmgMult: 1.1 },
+      { id: 'c_jis', name: '全知全能JISマスター守り', rarity: 'SSR', bonus: '攻撃力 +40% / EXP +50%', expMult: 1.5, dmgMult: 1.4 }
+    ];
+
+    const SHOP_ITEMS = [
+      { id: 'hint', name: '📜 ヒントの巻物', price: 40, desc: 'バトル中に問題の重要なヒントを画面に表示する。' },
+      { id: 'fifty', name: '🧪 50/50の薬', price: 60, desc: '4択問題の不正解の選択肢を2つ消去する（4択専用）。' },
+      { id: 'onigiri', name: '🍙 HP回復おにぎり', price: 35, desc: 'バトル中にプレイヤーのHPを50回復する。' }
+    ];
+
+    // =========================================================================
+    // 6. アプリ状態管理 & localStorage 永続化
+    // =========================================================================
+    const STORAGE_KEY = 'katei_sogo_rpg_save_v1';
+
+    let state = {
+      level: 1,
+      exp: 0,
+      coins: 150,
+      maxCombo: 0,
+      darkMode: true,
+      theme: 'neon',
+      sound: true,
+      unlockedCharms: ['c_none'],
+      equippedCharm: 'c_none',
+      inventory: { hint: 2, fifty: 1, onigiri: 2 },
+      bookmarks: [],     // 問題IDの配列
+      wrongIds: [],      // 間違えた問題IDの配列
+      unitStats: {       // 単元別 { answered, correct }
+        '衣生活①': { answered: 0, correct: 0 },
+        '衣生活②': { answered: 0, correct: 0 },
+        '衣生活③': { answered: 0, correct: 0 },
+        '衣生活④': { answered: 0, correct: 0 },
+        '衣生活⑤': { answered: 0, correct: 0 },
+        '衣生活⑥': { answered: 0, correct: 0 }
+      }
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = {
+            ...state,
+            ...parsed,
+            inventory: { ...state.inventory, ...(parsed.inventory || {}) },
+            unitStats: { ...state.unitStats, ...(parsed.unitStats || {}) }
+          };
+        }
+      } catch (e) {
+        console.warn('Save data load failed:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('Save data write failed:', e);
+      }
+    }
+
+    // =========================================================================
+    // 7. バトル進行用変数
+    // =========================================================================
+    let battle = {
+      active: false,
+      modeName: '',
+      unitKey: 'default',
+      queue: [],
+      index: 0,
+      combo: 0,
+      sessionCorrect: 0,
+      sessionExp: 0,
+      sessionCoins: 0,
+      playerHp: 100,
+      playerMaxHp: 100,
+      playerMp: 50,
+      playerMaxMp: 50,
+      enemyHp: 100,
+      enemyMaxHp: 100,
+      answeredCurrent: false,
+      multiSelected: new Set(),
+      sortOrder: []
+    };
+
+    // =========================================================================
+    // 8. UI初期化＆画面切り替え
+    // =========================================================================
+    function initApp() {
+      loadState();
+      applyThemeAndMode();
+      document.getElementById('homeHeroAvatar').innerHTML = HERO_SVG;
+      document.getElementById('playerSpriteWrap').innerHTML = HERO_SVG;
+      updateAllHUD();
+      renderStages();
+      renderGachaAndShop();
+      filterFlashcards();
+      renderDictionary();
+      renderStats();
+      switchTab('home');
+      initBackgroundCanvas();
+    }
+
+    function switchTab(tabId) {
+      sfx.click();
+      document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.style.background = 'var(--accent-1)';
+          btn.style.color = '#090913';
+          btn.style.borderColor = 'var(--accent-1)';
+        } else {
+          btn.style.background = 'var(--bg-card-solid)';
+          btn.style.color = 'var(--text-main)';
+          btn.style.borderColor = 'var(--border-color)';
+        }
+      });
+
+      if (tabId === 'home') renderStages();
+      if (tabId === 'gacha') renderGachaAndShop();
+      if (tabId === 'stats') renderStats();
+    }
+
+    function getLevelTitle(lv) {
+      if (lv >= 15) return '衣生活グランドマスター';
+      if (lv >= 10) return 'サスティナブル賢者';
+      if (lv >= 6)  return 'JIS絵表示ハンター';
+      if (lv >= 3)  return '繊維の探求者';
+      return '見習い衣生活士';
+    }
+
+    function getNextLevelExp(lv) {
+      return lv * 100;
+    }
+
+    function updateAllHUD() {
+      const nextExp = getNextLevelExp(state.level);
+      const pct = Math.min(100, Math.round((state.exp / nextExp) * 100));
+      const charm = CHARMS.find(c => c.id === state.equippedCharm) || CHARMS[0];
+
+      document.getElementById('hdrLevel').textContent = state.level;
+      document.getElementById('hdrCoins').textContent = state.coins;
+      document.getElementById('hdrTitleBadge').textContent = getLevelTitle(state.level);
+
+      document.getElementById('homeLevel').textContent = state.level;
+      document.getElementById('homeExp').textContent = state.exp;
+      document.getElementById('homeNextExp').textContent = nextExp;
+      document.getElementById('homeExpBar').style.width = `${pct}%`;
+      document.getElementById('homeEquippedCharm').textContent = `おまもり: ${charm.name}`;
+
+      document.getElementById('weakCountBadge').textContent = state.wrongIds.length;
+      document.getElementById('bookmarkCountBadge').textContent = state.bookmarks.length;
+      document.getElementById('gachaCoins').textContent = state.coins;
+
+      document.getElementById('invHintCount').textContent = state.inventory.hint;
+      document.getElementById('invFiftyCount').textContent = state.inventory.fifty;
+      document.getElementById('invOnigiriCount').textContent = state.inventory.onigiri;
+    }
+
+    // =========================================================================
+    // 9. テーマ・ダーク/ライト・サウンド切替
+    // =========================================================================
+    function applyThemeAndMode() {
+      const html = document.documentElement;
+      if (state.darkMode) {
+        html.classList.add('dark');
+        document.getElementById('darkModeBtn').textContent = '🌙';
+      } else {
+        html.classList.remove('dark');
+        document.getElementById('darkModeBtn').textContent = '☀️';
+      }
+      document.body.setAttribute('data-theme', state.theme);
+      document.getElementById('themeSelect').value = state.theme;
+      sfx.enabled = state.sound;
+      document.getElementById('soundBtn').textContent = state.sound ? '🔊' : '🔇';
+    }
+
+    function toggleDarkMode() {
+      state.darkMode = !state.darkMode;
+      sfx.click();
+      applyThemeAndMode();
+      saveState();
+    }
+
+    function changeWallpaperTheme(val) {
+      state.theme = val;
+      sfx.click();
+      applyThemeAndMode();
+      saveState();
+      showToast(`テーマを切り替えました！`);
+    }
+
+    function toggleSound() {
+      state.sound = !state.sound;
+      sfx.enabled = state.sound;
+      if (state.sound) sfx.click();
+      applyThemeAndMode();
+      saveState();
+    }
+
+    // =========================================================================
+    // 10. ステージ一覧描画
+    // =========================================================================
+    function renderStages() {
+      const grid = document.getElementById('stageGrid');
+      grid.innerHTML = '';
+      STAGES.forEach(st => {
+        const unitQs = QUESTIONS.filter(q => q.unit === st.id);
+        const stat = state.unitStats[st.id] || { answered: 0, correct: 0 };
+        const rate = stat.answered > 0 ? Math.round((stat.correct / stat.answered) * 100) : 0;
+
+        const card = document.createElement('div');
+        card.className = 'rpg-card p-4 flex flex-col justify-between gap-3 border-2 hover:scale-[1.01]';
+        card.style.borderColor = st.color;
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded-lg text-xs font-extrabold text-white" style="background:${st.color};">${st.id}（全${unitQs.length}問）</span>
+              <span class="font-retro text-xs font-bold">正答率: ${rate}%</span>
+            </div>
+            <div class="flex items-center gap-3 my-2">
+              <div class="w-12 h-12 shrink-0 p-1 rounded-xl bg-black/30 border border-white/10">
+                ${BOSS_SVGS[st.id]}
+              </div>
+              <div>
+                <h3 class="font-bold text-base leading-snug">${st.title}</h3>
+                <p class="text-xs font-retro text-rose-400 mt-0.5">BOSS: ${st.boss}</p>
+              </div>
+            </div>
+            <p class="text-xs opacity-80 leading-relaxed">${st.desc}</p>
+          </div>
+          <button onclick="startBattle('${st.id}')" class="retro-btn w-full py-2.5 rounded-xl font-extrabold text-sm text-white shadow" style="background:${st.color};">
+            ⚔️ この単元に挑む
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // =========================================================================
+    // 11. バトル開始・出題・判定ロジック
+    // =========================================================================
+    function getSelectedQuestionTypes() {
+      const checked = Array.from(document.querySelectorAll('.type-filter-cb:checked')).map(cb => cb.value);
+      return checked.length > 0 ? checked : ['single', 'multi', 'input', 'sort'];
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startBattle(mode) {
+      sfx.click();
+      const allowedTypes = getSelectedQuestionTypes();
+      let pool = [];
+      let modeName = '';
+      let unitKey = 'default';
+      let bossName = 'テストの魔王';
+
+      if (mode === 'all') {
+        pool = QUESTIONS.filter(q => allowedTypes.includes(q.type));
+        modeName = '🔥 全75問完全制覇モード';
+        bossName = '家庭総合・究極大魔王';
+      } else if (mode === 'quick10') {
+        pool = shuffleArray(QUESTIONS.filter(q => allowedTypes.includes(q.type))).slice(0, 10);
+        modeName = '⚡ ランダム10問アタック';
+        bossName = 'テストの魔王';
+      } else if (mode === 'weak') {
+        pool = QUESTIONS.filter(q => state.wrongIds.includes(q.id));
+        if (pool.length === 0) {
+          showToast('🎉 現在、間違えた問題はありません！素晴らしい！');
+          return;
+        }
+        modeName = '💀 苦手克服モード';
+        bossName = 'ニガテ・ファントム';
+      } else if (mode === 'bookmark') {
+        pool = QUESTIONS.filter(q => state.bookmarks.includes(q.id));
+        if (pool.length === 0) {
+          showToast('★ 要復習ブックマークされた問題がまだありません。');
+          return;
+        }
+        modeName = '★ 要復習ブックマーク特訓';
+        bossName = 'フクシュウ・ナイト';
+      } else {
+        // 単元別ステージ
+        const stageInfo = STAGES.find(s => s.id === mode);
+        pool = QUESTIONS.filter(q => q.unit === mode && allowedTypes.includes(q.type));
+        if (pool.length === 0) {
+          pool = QUESTIONS.filter(q => q.unit === mode);
+        }
+        modeName = stageInfo ? stageInfo.title : mode;
+        unitKey = mode;
+        bossName = stageInfo ? stageInfo.boss : '単元ボス';
+      }
+
+      if (pool.length === 0) {
+        showToast('条件に一致する問題がありません。フィルターを確認してください。');
+        return;
+      }
+
+      // ランダムモード以外は順番に出題（全問や単元別で系統立てて学べるように）
+      const queue = (mode === 'quick10' || mode === 'weak') ? shuffleArray(pool) : pool;
+
+      battle = {
+        active: true,
+        modeName,
+        unitKey,
+        queue,
+        index: 0,
+        combo: 0,
+        sessionCorrect: 0,
+        sessionExp: 0,
+        sessionCoins: 0,
+        playerMaxHp: 100 + (state.level - 1) * 10,
+        playerHp: 100 + (state.level - 1) * 10,
+        playerMaxMp: 50,
+        playerMp: 50,
+        enemyMaxHp: queue.length * 30,
+        enemyHp: queue.length * 30,
+        answeredCurrent: false,
+        multiSelected: new Set(),
+        sortOrder: []
+      };
+
+      document.getElementById('battleStageName').textContent = modeName;
+      document.getElementById('btlEnemyName').textContent = bossName;
+      document.getElementById('enemySpriteWrap').innerHTML = BOSS_SVGS[unitKey] || BOSS_SVGS['default'];
+
+      const charm = CHARMS.find(c => c.id === state.equippedCharm) || CHARMS[0];
+      document.getElementById('btlCharmIndicator').textContent = charm.id !== 'c_none' ? `🔮${charm.name}` : '';
+
+      document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-battle').classList.remove('hidden');
+
+      updateBattleHUD();
+      renderQuestion();
+    }
+
+    function confirmExitBattle() {
+      sfx.click();
+      openModal(
+        '🏃',
+        'クエストを撤退しますか？',
+        'これまでの正解分のEXPやコインはすでに保存されています。ホーム画面に戻りますか？',
+        [
+          { label: '続ける', primary: false, onClick: closeModal },
+          { label: 'ホームへ戻る', primary: true, onClick: () => { closeModal(); battle.active = false; switchTab('home'); } }
+        ]
+      );
+    }
+
+    function updateBattleHUD() {
+      document.getElementById('btlPlayerLv').textContent = state.level;
+      document.getElementById('btlPlayerHp').textContent = Math.max(0, battle.playerHp);
+      document.getElementById('btlPlayerMaxHp').textContent = battle.playerMaxHp;
+      document.getElementById('btlPlayerHpBar').style.width = `${Math.max(0, (battle.playerHp / battle.playerMaxHp) * 100)}%`;
+
+      document.getElementById('btlPlayerMp').textContent = battle.playerMp;
+      document.getElementById('btlPlayerMaxMp').textContent = battle.playerMaxMp;
+
+      document.getElementById('btlEnemyHp').textContent = Math.max(0, battle.enemyHp);
+      document.getElementById('btlEnemyMaxHp').textContent = battle.enemyMaxHp;
+      document.getElementById('btlEnemyHpBar').style.width = `${Math.max(0, (battle.enemyHp / battle.enemyMaxHp) * 100)}%`;
+
+      document.getElementById('qCurrentNum').textContent = battle.index + 1;
+      document.getElementById('qTotalNum').textContent = battle.queue.length;
+
+      const comboEl = document.getElementById('comboDisplay');
+      if (battle.combo >= 2) {
+        comboEl.classList.remove('hidden');
+        comboEl.textContent = `🔥 ${battle.combo} COMBO!`;
+      } else {
+        comboEl.classList.add('hidden');
+      }
+      updateAllHUD();
+    }
+
+    function renderQuestion() {
+      const q = battle.queue[battle.index];
+      battle.answeredCurrent = false;
+      battle.multiSelected.clear();
+
+      document.getElementById('qUnitTag').textContent = q.unit;
+      const typeLabels = { single: '4択問題', multi: '複数選択（すべて選べ）', input: '記述入力問題', sort: '並び替え問題' };
+      document.getElementById('qTypeTag').textContent = typeLabels[q.type] || '問題';
+      document.getElementById('qText').textContent = `Q${battle.index + 1}. ${q.q}`;
+
+      // ブックマーク表示更新
+      const isBookmarked = state.bookmarks.includes(q.id);
+      document.getElementById('qBookmarkStar').textContent = isBookmarked ? '★' : '☆';
+      document.getElementById('qBookmarkBtn').style.color = isBookmarked ? '#fbbf24' : 'var(--text-main)';
+
+      // ヒント・解説リセット
+      document.getElementById('qHintBox').classList.add('hidden');
+      document.getElementById('qHintText').textContent = q.hint || '基本用語を思い出そう！';
+      document.getElementById('explanationBox').classList.add('hidden');
+
+      const area = document.getElementById('answerArea');
+      area.innerHTML = '';
+
+      if (q.type === 'single') {
+        // 選択肢をシャッフルして表示（元のインデックスを保持）
+        const indexedOptions = q.options.map((text, idx) => ({ text, origIdx: idx }));
+        const shuffled = shuffleArray(indexedOptions);
+
+        shuffled.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'single-opt-btn retro-btn w-full text-left p-3.5 sm:p-4 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-3';
+          btn.style.borderColor = 'var(--border-color)';
+          btn.style.backgroundColor = 'rgba(255,255,255,0.04)';
+          btn.dataset.origIdx = opt.origIdx;
+          btn.innerHTML = `
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center font-retro text-xs shrink-0 text-slate-950" style="background: var(--accent-1);">${['A','B','C','D'][i]}</span>
+            <span>${opt.text}</span>
+          `;
+          btn.onclick = () => submitSingleAnswer(opt.origIdx, btn);
+          area.appendChild(btn);
+        });
+
+      } else if (q.type === 'multi') {
+        const indexedOptions = q.options.map((text, idx) => ({ text, origIdx: idx }));
+        const shuffled = shuffleArray(indexedOptions);
+
+        shuffled.forEach((opt) => {
+          const label = document.createElement('label');
+          label.className = 'multi-opt-label retro-btn w-full text-left p-3.5 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-3 cursor-pointer select-none';
+          label.style.borderColor = 'var(--border-color)';
+          label.style.backgroundColor = 'rgba(255,255,255,0.04)';
+          label.dataset.origIdx = opt.origIdx;
+
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.className = 'w-5 h-5 accent-pink-500 shrink-0';
+          cb.onchange = () => {
+            if (battle.answeredCurrent) return;
+            sfx.click();
+            if (cb.checked) {
+              battle.multiSelected.add(opt.origIdx);
+              label.style.borderColor = 'var(--accent-2)';
+              label.style.backgroundColor = 'rgba(236, 72, 153, 0.15)';
+            } else {
+              battle.multiSelected.delete(opt.origIdx);
+              label.style.borderColor = 'var(--border-color)';
+              label.style.backgroundColor = 'rgba(255,255,255,0.04)';
+            }
+          };
+
+          const span = document.createElement('span');
+          span.textContent = opt.text;
+
+          label.appendChild(cb);
+          label.appendChild(span);
+          area.appendChild(label);
+        });
+
+        const submitBtn = document.createElement('button');
+        submitBtn.id = 'multiSubmitBtn';
+        submitBtn.className = 'retro-btn w-full sm:w-auto px-8 py-3.5 mt-2 rounded-xl font-extrabold text-slate-950 text-base shadow-lg';
+        submitBtn.style.background = 'linear-gradient(135deg, var(--accent-3), var(--accent-1))';
+        submitBtn.textContent = '⚔️ この選択で攻撃（回答する）';
+        submitBtn.onclick = submitMultiAnswer;
+        area.appendChild(submitBtn);
+
+      } else if (q.type === 'input') {
+        const wrap = document.createElement('div');
+        wrap.className = 'flex flex-col sm:flex-row gap-2.5';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'textAnswerInput';
+        input.placeholder = 'ここに答えを入力（ひらがな・カタカナ・漢字OK）';
+        input.className = 'flex-1 px-4 py-3.5 rounded-xl border-2 text-base font-bold focus:outline-none';
+        input.style.backgroundColor = 'var(--bg-card-solid)';
+        input.style.borderColor = 'var(--accent-1)';
+        input.style.color = 'var(--text-main)';
+        input.onkeydown = (e) => { if (e.key === 'Enter') submitInputAnswer(); };
+
+        const btn = document.createElement('button');
+        btn.id = 'inputSubmitBtn';
+        btn.className = 'retro-btn px-7 py-3.5 rounded-xl font-extrabold text-slate-950 text-base shadow-lg shrink-0';
+        btn.style.background = 'linear-gradient(135deg, var(--accent-3), var(--accent-1))';
+        btn.textContent = '⚔️ 回答する';
+        btn.onclick = submitInputAnswer;
+
+        wrap.appendChild(input);
+        wrap.appendChild(btn);
+        area.appendChild(wrap);
+        setTimeout(() => input.focus(), 50);
+
+      } else if (q.type === 'sort') {
+        battle.sortOrder = shuffleArray([...q.items]);
+        // 万が一最初から正解と同じ並びになったら再シャッフル
+        if (JSON.stringify(battle.sortOrder) === JSON.stringify(q.items)) {
+          battle.sortOrder.reverse();
+        }
+        renderSortList();
+      }
+    }
+
+    function renderSortList() {
+      const q = battle.queue[battle.index];
+      const area = document.getElementById('answerArea');
+      area.innerHTML = '<p class="text-xs opacity-80 mb-2">▲▼ボタンで順番を入れ替えて、正しい順序に並び替えよう！</p>';
+
+      const list = document.createElement('div');
+      list.className = 'space-y-2';
+
+      battle.sortOrder.forEach((itemText, idx) => {
+        const row = document.createElement('div');
+        row.className = 'p-3 rounded-xl border-2 flex items-center justify-between gap-2 font-bold text-sm sm:text-base';
+        row.style.borderColor = 'var(--border-color)';
+        row.style.backgroundColor = 'rgba(255,255,255,0.05)';
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center font-retro text-xs text-slate-950" style="background: var(--accent-3);">${idx + 1}</span>
+            <span>${itemText}</span>
+          </div>
+          <div class="flex gap-1.5">
+            <button type="button" ${idx === 0 || battle.answeredCurrent ? 'disabled' : ''} onclick="moveSortItem(${idx}, -1)"
+              class="retro-btn px-2.5 py-1 rounded-lg border text-xs font-bold disabled:opacity-30" style="border-color: var(--border-color);">▲</button>
+            <button type="button" ${idx === battle.sortOrder.length - 1 || battle.answeredCurrent ? 'disabled' : ''} onclick="moveSortItem(${idx}, 1)"
+              class="retro-btn px-2.5 py-1 rounded-lg border text-xs font-bold disabled:opacity-30" style="border-color: var(--border-color);">▼</button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      area.appendChild(list);
+
+      if (!battle.answeredCurrent) {
+        const btn = document.createElement('button');
+        btn.className = 'retro-btn w-full sm:w-auto px-8 py-3.5 mt-3 rounded-xl font-extrabold text-slate-950 text-base shadow-lg';
+        btn.style.background = 'linear-gradient(135deg, var(--accent-3), var(--accent-1))';
+        btn.textContent = '⚔️ この順番で確定する';
+        btn.onclick = submitSortAnswer;
+        area.appendChild(btn);
+      }
+    }
+
+    function moveSortItem(idx, dir) {
+      if (battle.answeredCurrent) return;
+      const target = idx + dir;
+      if (target < 0 || target >= battle.sortOrder.length) return;
+      sfx.click();
+      const temp = battle.sortOrder[idx];
+      battle.sortOrder[idx] = battle.sortOrder[target];
+      battle.sortOrder[target] = temp;
+      renderSortList();
+    }
+
+    // --- 回答判定処理 ---
+    function submitSingleAnswer(chosenOrigIdx, clickedBtn) {
+      if (battle.answeredCurrent) return;
+      const q = battle.queue[battle.index];
+      const isCorrect = (chosenOrigIdx === q.answer);
+
+      document.querySelectorAll('.single-opt-btn').forEach(btn => {
+        btn.disabled = true;
+        const orig = Number(btn.dataset.origIdx);
+        if (orig === q.answer) {
+          btn.style.borderColor = '#10b981';
+          btn.style.backgroundColor = 'rgba(16, 185, 129, 0.25)';
+        } else if (btn === clickedBtn && !isCorrect) {
+          btn.style.borderColor = '#ef4444';
+          btn.style.backgroundColor = 'rgba(239, 68, 68, 0.25)';
+        }
+      });
+
+      handleAnswerOutcome(isCorrect, q.options[q.answer]);
+    }
+
+    function submitMultiAnswer() {
+      if (battle.answeredCurrent) return;
+      if (battle.multiSelected.size === 0) {
+        showToast('少なくとも1つ選択してください！');
+        return;
+      }
+      const q = battle.queue[battle.index];
+      const correctSet = new Set(q.answer);
+      const isCorrect = (battle.multiSelected.size === correctSet.size) &&
+                        [...correctSet].every(x => battle.multiSelected.has(x));
+
+      document.querySelectorAll('.multi-opt-label').forEach(label => {
+        const orig = Number(label.dataset.origIdx);
+        label.querySelector('input').disabled = true;
+        if (correctSet.has(orig)) {
+          label.style.borderColor = '#10b981';
+          label.style.backgroundColor = 'rgba(16, 185, 129, 0.25)';
+        } else if (battle.multiSelected.has(orig)) {
+          label.style.borderColor = '#ef4444';
+          label.style.backgroundColor = 'rgba(239, 68, 68, 0.25)';
+        }
+      });
+      const subBtn = document.getElementById('multiSubmitBtn');
+      if (subBtn) subBtn.disabled = true;
+
+      const correctTexts = q.answer.map(i => q.options[i]).join(' ／ ');
+      handleAnswerOutcome(isCorrect, correctTexts);
+    }
+
+    // 表記ゆれ・ひらがな/カタカナ正規化関数
+    function normalizeText(str) {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[\s　・･\-－ー()（）「」『』]/g, '')
+        // カタカナをひらがなに統一
+        .replace(/[\u30a1-\u30f6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+    }
+
+    function submitInputAnswer() {
+      if (battle.answeredCurrent) return;
+      const input = document.getElementById('textAnswerInput');
+      const val = input.value.trim();
+      if (!val) {
+        showToast('答えを入力してください！');
+        return;
+      }
+      const q = battle.queue[battle.index];
+      const normUser = normalizeText(val);
+      const isCorrect = q.accept.some(acc => normalizeText(acc) === normUser);
+
+      input.disabled = true;
+      const btn = document.getElementById('inputSubmitBtn');
+      if (btn) btn.disabled = true;
+      input.style.borderColor = isCorrect ? '#10b981' : '#ef4444';
+
+      handleAnswerOutcome(isCorrect, q.displayAnswer);
+    }
+
+    function submitSortAnswer() {
+      if (battle.answeredCurrent) return;
+      const q = battle.queue[battle.index];
+      const isCorrect = JSON.stringify(battle.sortOrder) === JSON.stringify(q.items);
+      battle.answeredCurrent = true;
+      renderSortList();
+      handleAnswerOutcome(isCorrect, q.items.join(' → '));
+    }
+
+    // --- 正解・不正解時のRPG演出＆データ更新 ---
+    function handleAnswerOutcome(isCorrect, correctDisplayStr) {
+      battle.answeredCurrent = true;
+      const q = battle.queue[battle.index];
+      const charm = CHARMS.find(c => c.id === state.equippedCharm) || CHARMS[0];
+
+      // 統計記録
+      if (!state.unitStats[q.unit]) state.unitStats[q.unit] = { answered: 0, correct: 0 };
+      state.unitStats[q.unit].answered += 1;
+
+      const heroWrap = document.getElementById('playerSpriteWrap');
+      const enemyWrap = document.getElementById('enemySpriteWrap');
+      const qCard = document.getElementById('questionCard');
+
+      if (isCorrect) {
+        sfx.correct();
+        triggerScreenFlash('rgba(16, 185, 129, 0.35)');
+        spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 28);
+
+        battle.combo += 1;
+        battle.sessionCorrect += 1;
+        if (battle.combo > state.maxCombo) state.maxCombo = battle.combo;
+
+        state.unitStats[q.unit].correct += 1;
+        // 苦手リストから解除
+        state.wrongIds = state.wrongIds.filter(id => id !== q.id);
+
+        // ダメージ計算＆アニメーション
+        const comboBonus = 1 + Math.min(1.0, (battle.combo - 1) * 0.1);
+        const dmg = Math.round(30 * charm.dmgMult * comboBonus);
+        battle.enemyHp = Math.max(0, battle.enemyHp - dmg);
+
+        heroWrap.classList.remove('animate-attack-hero');
+        void heroWrap.offsetWidth;
+        heroWrap.classList.add('animate-attack-hero');
+
+        setTimeout(() => {
+          enemyWrap.classList.remove('animate-hit');
+          void enemyWrap.offsetWidth;
+          enemyWrap.classList.add('animate-hit');
+          showDamagePopup(enemyWrap, `-${dmg}!`, '#fde047');
+        }, 160);
+
+        // EXP・コイン獲得
+        const gainedExp = Math.round((25 + battle.combo * 3) * charm.expMult);
+        const gainedCoins = 15 + Math.min(20, battle.combo * 2);
+        battle.sessionExp += gainedExp;
+        battle.sessionCoins += gainedCoins;
+        state.coins += gainedCoins;
+        addPlayerExp(gainedExp);
+
+        document.getElementById('resultBanner').innerHTML = `✨ 正解！敵に <span class="text-amber-300">${dmg}</span> ダメージ！ (+${gainedExp} EXP / +🪙${gainedCoins})`;
+        document.getElementById('resultBanner').style.color = '#34d399';
+        document.getElementById('correctAnswerDisplay').textContent = `【正解】 ${correctDisplayStr}`;
+
+      } else {
+        sfx.wrong();
+        triggerScreenFlash('rgba(239, 68, 68, 0.4)');
+        qCard.classList.remove('animate-shake');
+        void qCard.offsetWidth;
+        qCard.classList.add('animate-shake');
+
+        battle.combo = 0;
+        if (!state.wrongIds.includes(q.id)) state.wrongIds.push(q.id);
+
+        const enemyDmg = 20;
+        battle.playerHp = Math.max(10, battle.playerHp - enemyDmg); // 学習継続のためHP10で踏みとどまる根性仕様
+
+        enemyWrap.classList.remove('animate-attack-enemy');
+        void enemyWrap.offsetWidth;
+        enemyWrap.classList.add('animate-attack-enemy');
+
+        setTimeout(() => {
+          heroWrap.classList.remove('animate-hit');
+          void heroWrap.offsetWidth;
+          heroWrap.classList.add('animate-hit');
+          showDamagePopup(heroWrap, `-${enemyDmg}`, '#f87171');
+        }, 160);
+
+        document.getElementById('resultBanner').innerHTML = `💥 不正解… 敵の反撃で ${enemyDmg} ダメージ！`;
+        document.getElementById('resultBanner').style.color = '#f87171';
+        document.getElementById('correctAnswerDisplay').textContent = `【正しい答え】 ${correctDisplayStr}`;
+      }
+
+      document.getElementById('explanationText').textContent = q.exp;
+      const expBox = document.getElementById('explanationBox');
+      expBox.classList.remove('hidden');
+
+      const nextBtn = document.getElementById('nextQuestionBtn');
+      nextBtn.textContent = (battle.index + 1 >= battle.queue.length) ? '🏆 リザルトを見る ▶' : '次の問題へ ▶';
+
+      updateBattleHUD();
+      saveState();
+    }
+
+    function addPlayerExp(amount) {
+      state.exp += amount;
+      let leveledUp = false;
+      while (state.exp >= getNextLevelExp(state.level)) {
+        state.exp -= getNextLevelExp(state.level);
+        state.level += 1;
+        leveledUp = true;
+      }
+      if (leveledUp) {
+        sfx.levelUp();
+        spawnParticles(window.innerWidth / 2, window.innerHeight / 3, 55);
+        showToast(`🎊 LEVEL UP! Lv.${state.level}「${getLevelTitle(state.level)}」になった！`);
+      }
+    }
+
+    function nextQuestion() {
+      sfx.click();
+      if (battle.index + 1 < battle.queue.length) {
+        battle.index += 1;
+        renderQuestion();
+        updateBattleHUD();
+      } else {
+        finishBattle();
+      }
+    }
+
+    function finishBattle() {
+      battle.active = false;
+      sfx.levelUp();
+      spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 60);
+      const rate = Math.round((battle.sessionCorrect / battle.queue.length) * 100);
+      openModal(
+        '🏆',
+        'クエストクリア！',
+        `
+          <div class="space-y-2 text-left bg-black/25 p-4 rounded-xl border border-white/10">
+            <div>ステージ：<strong>${battle.modeName}</strong></div>
+            <div>正解数：<strong class="text-emerald-400">${battle.sessionCorrect} / ${battle.queue.length} 問 (${rate}%)</strong></div>
+            <div>獲得EXP：<strong class="text-sky-400">+${battle.sessionExp} EXP</strong></div>
+            <div>獲得コイン：<strong class="text-yellow-400">+🪙${battle.sessionCoins}</strong></div>
+          </div>
+        `,
+        [
+          { label: 'ホームへ戻る', primary: true, onClick: () => { closeModal(); switchTab('home'); } }
+        ]
+      );
+    }
+
+    // --- バトル中アイテム使用 ---
+    function useBattleItem(itemKey) {
+      if (!battle.active) return;
+      if (state.inventory[itemKey] <= 0) {
+        showToast('そのアイテムを持っていません！道具屋で購入しよう。');
+        return;
+      }
+      const q = battle.queue[battle.index];
+
+      if (itemKey === 'hint') {
+        if (!document.getElementById('qHintBox').classList.contains('hidden')) {
+          showToast('すでにヒントを表示しています！');
+          return;
+        }
+        state.inventory.hint -= 1;
+        sfx.click();
+        document.getElementById('qHintBox').classList.remove('hidden');
+        showToast('📜 ヒントの巻物を使った！');
+
+      } else if (itemKey === 'fifty') {
+        if (q.type !== 'single' || battle.answeredCurrent) {
+          showToast('50/50の薬は回答前の4択問題でのみ使用できます！');
+          return;
+        }
+        const wrongBtns = Array.from(document.querySelectorAll('.single-opt-btn'))
+          .filter(b => Number(b.dataset.origIdx) !== q.answer && !b.disabled);
+        if (wrongBtns.length <= 1) {
+          showToast('これ以上選択肢を減らせません！');
+          return;
+        }
+        state.inventory.fifty -= 1;
+        sfx.click();
+        shuffleArray(wrongBtns).slice(0, 2).forEach(b => {
+          b.disabled = true;
+          b.style.opacity = '0.25';
+        });
+        showToast('🧪 50/50の薬で不正解を2つ消去した！');
+
+      } else if (itemKey === 'onigiri') {
+        if (battle.playerHp >= battle.playerMaxHp) {
+          showToast('HPはすでに満タンです！');
+          return;
+        }
+        state.inventory.onigiri -= 1;
+        sfx.correct();
+        battle.playerHp = Math.min(battle.playerMaxHp, battle.playerHp + 50);
+        showDamagePopup(document.getElementById('playerSpriteWrap'), '+50 HP!', '#34d399');
+        showToast('🍙 HP回復おにぎりを食べてHPが50回復した！');
+      }
+
+      updateBattleHUD();
+      saveState();
+    }
+
+    function toggleCurrentBookmark() {
+      const q = battle.queue[battle.index];
+      sfx.click();
+      if (state.bookmarks.includes(q.id)) {
+        state.bookmarks = state.bookmarks.filter(id => id !== q.id);
+        showToast('要復習ブックマークを解除しました');
+      } else {
+        state.bookmarks.push(q.id);
+        showToast('★ 要復習ブックマークに登録しました！');
+      }
+      const isB = state.bookmarks.includes(q.id);
+      document.getElementById('qBookmarkStar').textContent = isB ? '★' : '☆';
+      document.getElementById('qBookmarkBtn').style.color = isB ? '#fbbf24' : 'var(--text-main)';
+      updateAllHUD();
+      saveState();
+    }
+
+    // =========================================================================
+    // 12. ガチャ＆道具屋
+    // =========================================================================
+    function renderGachaAndShop() {
+      updateAllHUD();
+      const charmList = document.getElementById('charmList');
+      charmList.innerHTML = '';
+
+      CHARMS.forEach(c => {
+        const unlocked = state.unlockedCharms.includes(c.id);
+        const equipped = state.equippedCharm === c.id;
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-xl border-2 text-left transition ${unlocked ? 'cursor-pointer hover:brightness-110' : 'opacity-45'}`;
+        card.style.borderColor = equipped ? 'var(--accent-3)' : 'var(--border-color)';
+        card.style.backgroundColor = equipped ? 'rgba(250, 204, 21, 0.14)' : 'rgba(0,0,0,0.2)';
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-retro mb-1">
+            <span class="px-1.5 py-0.5 rounded bg-white/10 font-bold">${c.rarity}</span>
+            <span>${equipped ? '✅ 装備中' : (unlocked ? 'クリックで装備' : '🔒 未所持')}</span>
+          </div>
+          <div class="font-bold text-sm">${unlocked ? c.name : '？？？'}</div>
+          <div class="text-xs opacity-80 mt-0.5">${unlocked ? c.bonus : 'ガチャで入手可能'}</div>
+        `;
+        if (unlocked) {
+          card.onclick = () => {
+            sfx.click();
+            state.equippedCharm = c.id;
+            saveState();
+            renderGachaAndShop();
+            showToast(`🔮「${c.name}」を装備した！`);
+          };
+        }
+        charmList.appendChild(card);
+      });
+
+      const shopList = document.getElementById('shopList');
+      shopList.innerHTML = '';
+      SHOP_ITEMS.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'p-3.5 rounded-xl border flex items-center justify-between gap-3';
+        row.style.borderColor = 'var(--border-color)';
+        row.style.backgroundColor = 'rgba(0,0,0,0.2)';
+        row.innerHTML = `
+          <div>
+            <div class="font-bold text-sm sm:text-base">${item.name} <span class="text-xs opacity-75">(所持: ${state.inventory[item.id]})</span></div>
+            <p class="text-xs opacity-80 mt-0.5">${item.desc}</p>
+          </div>
+          <button onclick="buyItem('${item.id}', ${item.price})" class="retro-btn px-3.5 py-2 rounded-xl font-extrabold text-xs sm:text-sm text-slate-950 shrink-0" style="background: var(--accent-3);">
+            🪙${item.price} 購入
+          </button>
+        `;
+        shopList.appendChild(row);
+      });
+    }
+
+    function pullGacha() {
+      if (state.coins < 100) {
+        showToast('コインが足りません！（1回 🪙100必要）');
+        return;
+      }
+      state.coins -= 100;
+      sfx.gacha();
+      spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 45);
+
+      const pool = CHARMS.filter(c => c.id !== 'c_none');
+      // レアリティ重み付け
+      const roll = Math.random();
+      let targetRarity = 'R';
+      if (roll > 0.85) targetRarity = 'SSR';
+      else if (roll > 0.5) targetRarity = 'SR';
+
+      const candidates = pool.filter(c => c.rarity === targetRarity);
+      const won = candidates[Math.floor(Math.random() * candidates.length)] || pool[0];
+
+      const isNew = !state.unlockedCharms.includes(won.id);
+      if (isNew) {
+        state.unlockedCharms.push(won.id);
+        state.equippedCharm = won.id;
+      } else {
+        // 被り救済コイン返還
+        state.coins += 40;
+      }
+
+      saveState();
+      renderGachaAndShop();
+
+      openModal(
+        '🔮',
+        `[${won.rarity}] ${won.name} 獲得！`,
+        `<p class="font-bold text-base mb-2" style="color:var(--accent-1);">${won.bonus}</p>
+         <p class="text-xs opacity-85">${isNew ? '✨ 新規おまもり入手！自動的に装備しました。' : 'すでに所持しているため、お礼に 🪙40 を受け取りました！'}</p>`,
+        [{ label: 'やったぜ！', primary: true, onClick: closeModal }]
+      );
+    }
+
+    function buyItem(id, price) {
+      if (state.coins < price) {
+        showToast('コインが足りません！クイズに正解して稼ごう！');
+        return;
+      }
+      sfx.click();
+      state.coins -= price;
+      state.inventory[id] = (state.inventory[id] || 0) + 1;
+      saveState();
+      renderGachaAndShop();
+      showToast('アイテムを購入しました！');
+    }
+
+    // =========================================================================
+    // 13. 暗記カード（フラッシュカード）
+    // =========================================================================
+    let filteredCards = [...FLASHCARDS];
+    let fcIdx = 0;
+    let fcFlipped = false;
+
+    function filterFlashcards() {
+      const unit = document.getElementById('fcUnitFilter').value;
+      filteredCards = (unit === 'all') ? [...FLASHCARDS] : FLASHCARDS.filter(c => c.unit === unit);
+      fcIdx = 0;
+      fcFlipped = false;
+      renderFlashcard();
+    }
+
+    function renderFlashcard() {
+      const card = filteredCards[fcIdx];
+      if (!card) return;
+      document.getElementById('fcUnitBadge').textContent = card.unit;
+      document.getElementById('fcSideBadge').textContent = fcFlipped ? '裏面（答え・解説）' : '表面（タップで裏返す）';
+      document.getElementById('fcContent').innerHTML = (fcFlipped ? card.back : card.front).replace(/\n/g, '<br>');
+      document.getElementById('fcIndex').textContent = fcIdx + 1;
+      document.getElementById('fcTotal').textContent = filteredCards.length;
+
+      const box = document.getElementById('flashcardBox');
+      box.style.borderColor = fcFlipped ? 'var(--accent-2)' : 'var(--accent-1)';
+    }
+
+    function flipFlashcard() {
+      sfx.click();
+      fcFlipped = !fcFlipped;
+      renderFlashcard();
+    }
+
+    function prevFlashcard() {
+      sfx.click();
+      fcIdx = (fcIdx - 1 + filteredCards.length) % filteredCards.length;
+      fcFlipped = false;
+      renderFlashcard();
+    }
+
+    function nextFlashcard() {
+      sfx.click();
+      fcIdx = (fcIdx + 1) % filteredCards.length;
+      fcFlipped = false;
+      renderFlashcard();
+    }
+
+    // =========================================================================
+    // 14. キーワード検索付き用語辞典
+    // =========================================================================
+    function renderDictionary() {
+      const kw = (document.getElementById('dictSearchInput').value || '').trim().toLowerCase();
+      const grid = document.getElementById('dictionaryGrid');
+      grid.innerHTML = '';
+
+      const results = DICTIONARY.filter(d =>
+        d.term.toLowerCase().includes(kw) ||
+        d.desc.toLowerCase().includes(kw) ||
+        d.unit.toLowerCase().includes(kw)
+      );
+
+      if (results.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-8 opacity-75">一致する用語が見つかりませんでした。</div>';
+        return;
+      }
+
+      results.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'rpg-card p-4 space-y-1.5';
+        div.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-extrabold text-base sm:text-lg" style="color: var(--accent-1);">${item.term}</h3>
+            <span class="px-2 py-0.5 rounded text-xs font-bold bg-white/10">${item.unit}</span>
+          </div>
+          <p class="text-xs sm:text-sm leading-relaxed opacity-90">${item.desc}</p>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    // =========================================================================
+    // 15. 戦績・単元別正答率バーグラフ＆リセット
+    // =========================================================================
+    function renderStats() {
+      let totalAns = 0;
+      let totalCor = 0;
+      const barsContainer = document.getElementById('unitStatsBars');
+      barsContainer.innerHTML = '';
+
+      STAGES.forEach(st => {
+        const stat = state.unitStats[st.id] || { answered: 0, correct: 0 };
+        totalAns += stat.answered;
+        totalCor += stat.correct;
+        const pct = stat.answered > 0 ? Math.round((stat.correct / stat.answered) * 100) : 0;
+
+        const row = document.createElement('div');
+        row.className = 'space-y-1';
+        row.innerHTML = `
+          <div class="flex justify-between text-xs sm:text-sm font-bold">
+            <span>${st.title}</span>
+            <span class="font-retro">${stat.correct} / ${stat.answered} 問 (${pct}%)</span>
+          </div>
+          <div class="w-full h-3.5 bg-slate-800 rounded-full overflow-hidden border border-white/10">
+            <div class="h-full transition-all duration-500 rounded-full" style="width:${pct}%; background:${st.color};"></div>
+          </div>
+        `;
+        barsContainer.appendChild(row);
+      });
+
+      document.getElementById('statTotalAnswered').textContent = totalAns;
+      document.getElementById('statAccuracy').textContent = totalAns > 0 ? `${Math.round((totalCor / totalAns) * 100)}%` : '0%';
+      document.getElementById('statMaxCombo').textContent = state.maxCombo;
+      document.getElementById('statLevel').textContent = state.level;
+    }
+
+    function confirmResetProgress() {
+      sfx.click();
+      openModal(
+        '⚠️',
+        '学習データを初期化しますか？',
+        'レベル・EXP・コイン・おまもり・正答率履歴がすべて初期状態に戻ります。この操作は取り消せません。',
+        [
+          { label: 'キャンセル', primary: false, onClick: closeModal },
+          {
+            label: '初期化する', primary: true,
+            onClick: () => {
+              localStorage.removeItem(STORAGE_KEY);
+              location.reload();
+            }
+          }
+        ]
+      );
+    }
+
+    // =========================================================================
+    // 16. ビジュアルエフェクト（パーティクル・フラッシュ・ダメージ・モーダル）
+    // =========================================================================
+    function triggerScreenFlash(rgbaColor) {
+      const layer = document.getElementById('flashLayer');
+      const div = document.createElement('div');
+      div.className = 'screen-flash';
+      div.style.backgroundColor = rgbaColor;
+      layer.appendChild(div);
+      setTimeout(() => div.remove(), 450);
+    }
+
+    function showDamagePopup(targetEl, text, color) {
+      const pop = document.createElement('div');
+      pop.className = 'damage-popup text-2xl sm:text-3xl';
+      pop.style.color = color;
+      pop.style.left = '25%';
+      pop.style.top = '0px';
+      pop.textContent = text;
+      targetEl.appendChild(pop);
+      setTimeout(() => pop.remove(), 1000);
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'rpg-card px-4 py-2.5 text-xs sm:text-sm font-bold shadow-xl border-2 pointer-events-auto transition-opacity duration-300';
+      toast.style.borderColor = 'var(--accent-1)';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    function openModal(icon, title, bodyHtml, buttons) {
+      document.getElementById('customModalIcon').textContent = icon;
+      document.getElementById('customModalTitle').textContent = title;
+      document.getElementById('customModalBody').innerHTML = bodyHtml;
+      const act = document.getElementById('customModalActions');
+      act.innerHTML = '';
+      buttons.forEach(b => {
+        const btn = document.createElement('button');
+        btn.className = 'retro-btn px-5 py-2.5 rounded-xl font-extrabold text-sm';
+        if (b.primary) {
+          btn.style.background = 'linear-gradient(135deg, var(--accent-3), var(--accent-1))';
+          btn.style.color = '#090913';
+        } else {
+          btn.style.border = '1px solid var(--border-color)';
+        }
+        btn.textContent = b.label;
+        btn.onclick = b.onClick;
+        act.appendChild(btn);
+      });
+      const modal = document.getElementById('customModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('customModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // =========================================================================
+    // 17. 背景アニメーション＆紙吹雪パーティクルキャンバス
+    // =========================================================================
+    let particles = [];
+    let bgStars = [];
+
+    function spawnParticles(x, y, count = 25) {
+      const colors = ['#00f5d4', '#ff007f', '#fee440', '#38bdf8', '#a855f7', '#34d399'];
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 7;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          size: 5 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 1.0
+        });
+      }
+    }
+
+    function initBackgroundCanvas() {
+      const canvas = document.getElementById('bgCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      for (let i = 0; i < 45; i++) {
+        bgStars.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          r: 1.5 + Math.random() * 2.5,
+          vy: 0.2 + Math.random() * 0.5
+        });
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const theme = document.body.getAttribute('data-theme');
+        const isDark = document.documentElement.classList.contains('dark');
+
+        // テーマ別背景パターン描画
+        ctx.save();
+        if (theme === 'cyber' || theme === 'neon') {
+          ctx.strokeStyle = isDark ? 'rgba(0, 245, 212, 0.06)' : 'rgba(15, 23, 42, 0.05)';
+          ctx.lineWidth = 1;
+          const step = 48;
+          for (let x = 0; x < canvas.width; x += step) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+          }
+          for (let y = 0; y < canvas.height; y += step) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+          }
+        } else if (theme === 'suruga') {
+          // 駿河和染風の七宝・波紋風ドット
+          ctx.strokeStyle = isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.12)';
+          ctx.lineWidth = 1.5;
+          for (let x = 0; x < canvas.width + 80; x += 80) {
+            for (let y = 0; y < canvas.height + 80; y += 80) {
+              ctx.beginPath(); ctx.arc(x, y, 36, 0, Math.PI * 2); ctx.stroke();
+            }
+          }
+        }
+
+        // 浮遊ドット星屑
+        bgStars.forEach(s => {
+          s.y -= s.vy;
+          if (s.y < 0) s.y = canvas.height;
+          ctx.fillStyle = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(15,23,42,0.12)';
+          ctx.fillRect(s.x, s.y, s.r, s.r);
+        });
+
+        // 正解時パーティクル爆発描画
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.18; // 重力
+          p.life -= 0.022;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
+        ctx.restore();
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    // 起動
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
